@@ -19,6 +19,7 @@ class Cards extends HTMLElement {
         sm: './images/airpods/go_airpods__ed69m4vdask2_large.png',
         md: './images/airpods/go_airpods__ed69m4vdask2_large.png',
         lg: './images/airpods/go_airpods__ed69m4vdask2_large.png'
+        
       },
       cards: [
         {
