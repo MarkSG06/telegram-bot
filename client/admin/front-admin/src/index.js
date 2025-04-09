@@ -1,0 +1,5 @@
+import './component/main.js'
+import './component/menu.js'
+import './component/table.js'
+import './component/form.js'
+import './component/header.js'
