@@ -1,16 +1,15 @@
 class SubscriptionForm extends HTMLElement {
-
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
   }
-  async connectedCallback() {
+
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
 
-  
-  loadData(){
+  loadData () {
     this.data = {
       title: 'promote a new product or service',
       info: 'star your business today with a great and strong landing page mado to enchance the marketers workflow.',
@@ -20,10 +19,10 @@ class SubscriptionForm extends HTMLElement {
       textButton: 'Subscribirme'
     }
   }
-  
+
   render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
 
       *{
@@ -282,4 +281,4 @@ class SubscriptionForm extends HTMLElement {
   }
 }
 
-customElements.define('subscription-form-component', SubscriptionForm);
+customElements.define('subscription-form-component', SubscriptionForm)

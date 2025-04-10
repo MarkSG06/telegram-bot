@@ -1,27 +1,26 @@
 class Hero extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.data = {}
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
 
-  loadData() {
+  loadData () {
     this.data = {
-      title: "Un bot de Telegram para buscar tus productos favoritos",
-      description: "Ahorra dinero perfeccionando y automatizando tus búsquedas gracias a nuestra IA.",
-      buttonText: "Comenzar"
+      title: 'Un bot de Telegram para buscar tus productos favoritos',
+      description: 'Ahorra dinero perfeccionando y automatizando tus búsquedas gracias a nuestra IA.',
+      buttonText: 'Comenzar'
     }
   }
 
-  render() {
+  render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
 
       *{
@@ -414,4 +413,4 @@ class Hero extends HTMLElement {
   }
 }
 
-customElements.define('hero-component', Hero);
+customElements.define('hero-component', Hero)

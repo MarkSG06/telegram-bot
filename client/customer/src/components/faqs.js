@@ -1,18 +1,17 @@
 class Faqs extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
 
     this.data = []
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
 
-  loadData() {
+  loadData () {
     this.data = [
       {
         title: '¿Qué elementos principales se incluyen en el diseño de un sitio web personalizado?',
@@ -29,9 +28,9 @@ class Faqs extends HTMLElement {
     ]
   }
 
-  render() {
+  render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     
     <style>
       *{
@@ -147,4 +146,4 @@ class Faqs extends HTMLElement {
   }
 }
 
-customElements.define('faqs-component', Faqs);
+customElements.define('faqs-component', Faqs)

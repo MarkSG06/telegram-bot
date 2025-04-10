@@ -1,16 +1,15 @@
 class Cards extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
-  loadData() {
+
+  loadData () {
     this.data = {
       title: 'Fácil de usar',
       description: 'Tan simple como decir qué productos buscas, las características que te interesan y cuanto estás dispuesto a pagas. Nuestro bot se encargará de buscarlo por ti y te notificará cuando encuentre algo que se ajuste a tus preferencias.',
@@ -19,7 +18,7 @@ class Cards extends HTMLElement {
         sm: './images/airpods/go_airpods__ed69m4vdask2_large.png',
         md: './images/airpods/go_airpods__ed69m4vdask2_large.png',
         lg: './images/airpods/go_airpods__ed69m4vdask2_large.png'
-        
+
       },
       cards: [
         {
@@ -55,9 +54,10 @@ class Cards extends HTMLElement {
       ]
     }
   }
-  render() {
+
+  render () {
     this.shadow.innerHTML =
-    /*html*/`
+    /* html */`
     <style>
       .cards{
         align-items: center;
@@ -292,22 +292,22 @@ class Cards extends HTMLElement {
 
       const sourceXS = document.createElement('source')
       sourceXS.srcset = card.images.xs
-      sourceXS.media = "(max-width: 480px)"
+      sourceXS.media = '(max-width: 480px)'
       sourceXS.appendChild(imageContent)
 
       const sourceSM = document.createElement('source')
       sourceSM.srcset = card.images.sm
-      sourceSM.media = "(max-width: 768px)"
+      sourceSM.media = '(max-width: 768px)'
       sourceSM.appendChild(imageContent)
 
       const sourceMD = document.createElement('source')
       sourceMD.srcset = card.images.md
-      sourceMD.media = "(max-width: 1024px)"
+      sourceMD.media = '(max-width: 1024px)'
       sourceMD.appendChild(imageContent)
 
       const sourceLG = document.createElement('source')
       sourceLG.srcset = card.images.lg
-      sourceLG.media = "(max-width: 1920px)"
+      sourceLG.media = '(max-width: 1920px)'
       sourceLG.appendChild(imageContent)
 
       const image = document.createElement('image')
@@ -318,4 +318,4 @@ class Cards extends HTMLElement {
   }
 }
 
-customElements.define('cards-component', Cards);
+customElements.define('cards-component', Cards)
