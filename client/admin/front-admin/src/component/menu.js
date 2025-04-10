@@ -1,16 +1,15 @@
 class Menu extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
 
-  loadData() {
+  loadData () {
     this.data = {
       title: 'Panel de Administración',
       menu: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -22,8 +21,8 @@ class Menu extends HTMLElement {
     }
   }
 
-  render() {
-    this.shadow.innerHTML = /*html*/`
+  render () {
+    this.shadow.innerHTML = /* html */`
       <style>
         * {
           margin: 0;

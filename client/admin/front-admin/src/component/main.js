@@ -1,17 +1,16 @@
 class Main extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.render()
   }
 
-render() {
-  this.shadow.innerHTML =
-  /*html*/`
+  render () {
+    this.shadow.innerHTML =
+      /* html */`
     <style>
       * {
         margin: 0;

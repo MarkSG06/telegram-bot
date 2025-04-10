@@ -1,16 +1,15 @@
 class Table extends HTMLElement {
-
-  constructor() {
+  constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
   }
 
-  async connectedCallback() {
+  async connectedCallback () {
     await this.loadData()
     await this.render()
   }
 
-  loadData() {
+  loadData () {
     this.data = {
       icons: {
         filter: `
@@ -50,17 +49,14 @@ class Table extends HTMLElement {
           updatedAt: '2024-04-22'
         }
 
-
       ],
 
       notification: '3 registro en total, mostrando 10 por página'
-    };
+    }
   }
 
-
-
-  render() {
-    this.shadow.innerHTML = /*html*/`
+  render () {
+    this.shadow.innerHTML = /* html */`
       <style>
         * {
           margin: 0;
@@ -154,45 +150,45 @@ class Table extends HTMLElement {
         </div>
       </div>
     `
-    const container = this.shadow.querySelector('#tableMainContainer');
+    const container = this.shadow.querySelector('#tableMainContainer')
 
     this.data.users.forEach(user => {
-      const userDiv = document.createElement('div');
-      userDiv.classList.add('saveForm');
+      const userDiv = document.createElement('div')
+      userDiv.classList.add('saveForm')
 
-      const buttonSVGsDiv = document.createElement('div');
-      buttonSVGsDiv.classList.add('buttonSVGs');
+      const buttonSVGsDiv = document.createElement('div')
+      buttonSVGsDiv.classList.add('buttonSVGs')
 
-      const editIconDiv = document.createElement('div');
-      editIconDiv.innerHTML = this.data.icons.edit;
+      const editIconDiv = document.createElement('div')
+      editIconDiv.innerHTML = this.data.icons.edit
 
-      const deleteIconDiv = document.createElement('div');
-      deleteIconDiv.innerHTML = this.data.icons.delete;
+      const deleteIconDiv = document.createElement('div')
+      deleteIconDiv.innerHTML = this.data.icons.delete
 
-      buttonSVGsDiv.appendChild(editIconDiv);
-      buttonSVGsDiv.appendChild(deleteIconDiv);
+      buttonSVGsDiv.appendChild(editIconDiv)
+      buttonSVGsDiv.appendChild(deleteIconDiv)
 
-      const userInfoList = document.createElement('ul');
+      const userInfoList = document.createElement('ul')
 
       const userInfo = [
         { label: 'Nombre:', value: user.name },
         { label: 'Email:', value: user.email },
         { label: 'Creado el:', value: user.createdAt },
         { label: 'Actualizado el:', value: user.updatedAt },
-      ];
+      ]
 
       userInfo.forEach(info => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>${info.label}</strong> ${info.value}`;
-        userInfoList.appendChild(li);
-      });
+        const li = document.createElement('li')
+        li.innerHTML = `<strong>${info.label}</strong> ${info.value}`
+        userInfoList.appendChild(li)
+      })
 
-      userDiv.appendChild(buttonSVGsDiv);
-      userDiv.appendChild(userInfoList);
+      userDiv.appendChild(buttonSVGsDiv)
+      userDiv.appendChild(userInfoList)
 
-      container.appendChild(userDiv);
-    });
-}
+      container.appendChild(userDiv)
+    })
+  }
 }
 
 customElements.define('table-component', Table)
