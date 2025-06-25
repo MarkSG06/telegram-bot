@@ -5,51 +5,7 @@ class Form extends HTMLElement {
   }
 
   async connectedCallback () {
-    await this.loadData()
     await this.render()
-  }
-
-  loadData () {
-    this.data = {
-      form: {
-        windowTitle: 'General',
-        icons: {
-          clear: `
-            <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 24 24">
-              <path fill="none" stroke="#000000" stroke-width="2"
-                d="M10,4 C10,2.8954305 10.8954305,2 12,2 C13.1045695,2 14,2.8954305 14,4 L14,10 L20,10 L20,14 L4,14 L4,10 L10,10 L10,4 Z 
-                  M4,14 L20,14 L20,22 L12,22 L4,22 L4,14 Z 
-                  M16,22 L16,16.3646005 M8,22 L8,16.3646005 M12,22 L12,16.3646005"/>
-            </svg>
-
-          `,
-          save: `
-            <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 32 32">
-              <path fill="none" stroke="#000000" stroke-width="2"
-                d="M4 4 H28 V28 H4 Z
-                  M10 4 V12 H22 V4
-                  M10 28 V20
-                  M16 28 V20
-                  M22 28 V20" />
-            </svg>
-
-
-          `
-        },
-        nombre: {
-          label: 'Nombre',
-          type: 'text',
-          id: 'nombre',
-          name: 'nombre'
-        },
-        email: {
-          label: 'Email',
-          type: 'email',
-          id: 'email',
-          name: 'email'
-        }
-      }
-    }
   }
 
   render () {
@@ -87,7 +43,7 @@ class Form extends HTMLElement {
           color: hsl(271, 76%, 53%);
         }
         /* ESTILO BOTON GENERAL TOOLBAR */
-        .windows span{
+        .tabs span{
           background-color: hsl(271, 76%, 53%);
           padding: 0.95rem;
           height: auto;
@@ -96,6 +52,11 @@ class Form extends HTMLElement {
           font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
         /* SECTION MAIN */
+        .sectionMain{
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+          gap:1rem;
+        }
         .sectionMain form {
           justify-self: center;
           width: 95%;
@@ -125,32 +86,93 @@ class Form extends HTMLElement {
       </style>
       <div class="sectionForm">
         <div class="toolbar">
-          <div class="windows">
-            <span>${this.data.form.windowTitle}</span>
+          <div class="tabs">
+            <span>General</span>
           </div>
           <div class="toolbarSVGs">
-            <div class="clear">
-              ${this.data.form.icons.clear}
+            <div class="clear-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 24 24">
+                <path fill="none" stroke="#000000" stroke-width="2"
+                  d="M10,4 C10,2.8954305 10.8954305,2 12,2 C13.1045695,2 14,2.8954305 14,4 L14,10 L20,10 L20,14 L4,14 L4,10 L10,10 L10,4 Z 
+                    M4,14 L20,14 L20,22 L12,22 L4,22 L4,14 Z 
+                    M16,22 L16,16.3646005 M8,22 L8,16.3646005 M12,22 L12,16.3646005"/>
+              </svg>
             </div>
-            <div class="save">
-              ${this.data.form.icons.save}
+            <div class="save-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 32 32">
+                <path fill="none" stroke="#000000" stroke-width="2"
+                  d="M4 4 H28 V28 H4 Z
+                    M10 4 V12 H22 V4
+                    M10 28 V20
+                    M16 28 V20
+                    M22 28 V20" />
+              </svg>
             </div>
           </div>
         </div>
-      </div>
-      <div class="sectionMain">
-        <form>
-          <div class="fieldGroup">
-            <label for="${this.data.form.nombre.id}">${this.data.form.nombre.label}</label>
-            <input type="${this.data.form.nombre.type}" id="${this.data.form.nombre.id}" name="${this.data.form.nombre.name}">
-          </div>
-          <div class="fieldGroup">
-            <label for="${this.data.form.email.id}">${this.data.form.email.label}</label>
-            <input type="${this.data.form.email.type}" id="${this.data.form.email.id}" name="${this.data.form.email.name}">
-          </div>
-        </form>
+        <div class="sectionMain">
+          <form>
+            <div class="fieldGroup">
+              <label for="name">Nombre</label>
+              <input type="text" id="name" name="name">
+            </div>
+            <div class="fieldGroup">
+              <label for="email">Email</label>
+              <input type="text" id="email" name="email">
+            </div>
+          </form>
+        </div>
       </div>
     `
+
+    this.renderSaveButton()
+  }
+
+  renderSaveButton () {
+    this.shadow.querySelector('.save-button').addEventListener('click', async event => {
+      event.preventDefault()
+
+      const form = this.shadow.querySelector('form')
+      const formData = new FormData(form)
+      const formDataJson = {}
+
+      for (const [key, value] of formData.entries()) {
+        formDataJson[key] = value !== '' ? value : null
+      }
+
+      try {
+        const method = 'POST'
+
+        const response = await fetch('/api/admin/users', {
+          method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formDataJson)
+        })
+
+        if (!response.ok) {
+          throw new Error(`Error al guardar los datos: ${response.statusText}`)
+        }
+
+        const data = await response.json()
+
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'Datos guardados correctamente',
+            type: 'success'
+          }
+        }))
+      } catch (error) {
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'No se han podido guardar los datos',
+            type: 'error'
+          }
+        }))
+        console.error('Error al guardar los datos:', error)
+      }
+    })
   }
 }
 

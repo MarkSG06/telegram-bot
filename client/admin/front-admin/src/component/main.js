@@ -25,7 +25,6 @@ class Main extends HTMLElement {
         margin: 0;
         padding: 0;
         font-family: inherit;
-        background-color: hsl(0, 0%, 22%);
         color: inherit; 
       }
     </style>
