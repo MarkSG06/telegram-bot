@@ -1,11 +1,27 @@
-class Form extends HTMLElement {
+import isEqual from 'lodash-es/isEqual'
+import { store } from '../../redux/store.js'
+import { refreshTable } from '../../redux/crud-slice.js'
+
+class UserForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
+    this.endpoint = '/api/admin/users'
+    this.unsubscribe = null
+    this.formElementData = null
   }
 
-  async connectedCallback () {
-    await this.render()
+  connectedCallback () {
+    this.unsubscribe = store.subscribe(() => {
+      const currentState = store.getState()
+
+      if (currentState.crud.formElement && currentState.crud.formElement.endPoint === this.endpoint && !isEqual(this.formElementData, currentState.crud.formElement.data)) {
+        this.formElementData = currentState.crud.formElement.data
+        this.showElement(this.formElementData)
+      }
+    })
+
+    this.render()
   }
 
   render () {
@@ -19,8 +35,7 @@ class Form extends HTMLElement {
 
         /* SECTION FORM */
         .toolbar {
-          margin-top: 1rem;
-          width: 95%;
+          width: 100%;
           height: 3rem;
           justify-self: center;
           display: flex;
@@ -84,13 +99,13 @@ class Form extends HTMLElement {
         }
 
       </style>
-      <div class="sectionForm">
+      <div class="sectionUserForm">
         <div class="toolbar">
           <div class="tabs">
             <span>General</span>
           </div>
           <div class="toolbarSVGs">
-            <div class="clear-button">
+            <div class="clean-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 24 24">
                 <path fill="none" stroke="#000000" stroke-width="2"
                   d="M10,4 C10,2.8954305 10.8954305,2 12,2 C13.1045695,2 14,2.8954305 14,4 L14,10 L20,10 L20,14 L4,14 L4,10 L10,10 L10,4 Z 
@@ -112,6 +127,7 @@ class Form extends HTMLElement {
         </div>
         <div class="sectionMain">
           <form>
+            <input type="hidden" name="id">
             <div class="fieldGroup">
               <label for="name">Nombre</label>
               <input type="text" id="name" name="name">
@@ -125,10 +141,10 @@ class Form extends HTMLElement {
       </div>
     `
 
-    this.renderSaveButton()
+    this.renderButtons()
   }
 
-  renderSaveButton () {
+  renderButtons () {
     this.shadow.querySelector('.save-button').addEventListener('click', async event => {
       event.preventDefault()
 
@@ -140,10 +156,13 @@ class Form extends HTMLElement {
         formDataJson[key] = value !== '' ? value : null
       }
 
-      try {
-        const method = 'POST'
+      const id = this.shadow.querySelector('[name="id"]').value
+      const endpoint = id ? `${this.endpoint}/${id}` : this.endpoint
+      const method = id ? 'PUT' : 'POST'
+      delete formDataJson.id
 
-        const response = await fetch('/api/admin/users', {
+      try {
+        const response = await fetch(endpoint, {
           method,
           headers: {
             'Content-Type': 'application/json'
@@ -155,7 +174,8 @@ class Form extends HTMLElement {
           throw new Error(`Error al guardar los datos: ${response.statusText}`)
         }
 
-        const data = await response.json()
+        store.dispatch(refreshTable(this.endpoint))
+        this.resetForm()
 
         document.dispatchEvent(new CustomEvent('notice', {
           detail: {
@@ -173,7 +193,26 @@ class Form extends HTMLElement {
         console.error('Error al guardar los datos:', error)
       }
     })
+
+    this.shadow.querySelector('.clean-button').addEventListener('click', async event => {
+      this.resetForm()
+    })
+  }
+
+  showElement (data) {
+    Object.entries(data).forEach(([key, value]) => {
+      if (this.shadow.querySelector(`[name="${key}"]`)) {
+        this.shadow.querySelector(`[name="${key}"]`).value = value
+      }
+    })
+  }
+
+  resetForm () {
+    const form = this.shadow.querySelector('form')
+    form.reset()
+    this.shadow.querySelector('[name="id"]').value = ''
+    this.formElementData = null
   }
 }
 
-customElements.define('form-component', Form)
+customElements.define('users-form-component', UserForm)

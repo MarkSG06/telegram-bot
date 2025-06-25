@@ -1,140 +1,137 @@
-class DeleteModel extends HTMLElement {
+import { store } from '../redux/store.js'
+import { refreshTable } from '../redux/crud-slice.js'
+
+class DeleteModal extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-
-    document.addEventListener('show-delete-modal', this.handleMessage.bind(this))
+    this.endpoint = ''
+    this.tableEndpoint = ''
+    document.addEventListener('showDeleteModal', this.showDeleteModal.bind(this))
   }
 
-  connectedCallback () {
+  async connectedCallback () {
     this.render()
   }
 
-  handleMessage (event) {
-    const modal = this.shadow.querySelector('.alertDelete')
-    if (modal) {
-      modal.classList.add('active')
-    }
+  showDeleteModal (event) {
+    const { endpoint, elementId } = event.detail
+    this.tableEndpoint = endpoint
+    this.endpoint = `${endpoint}/${elementId}`
+    this.shadow.querySelector('.overlay').classList.add('active')
   }
 
   render () {
-    this.shadow.innerHTML = /* html */`
-      <style>
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
+    this.shadow.innerHTML =
+      /* html */`
+    <style>
+      *{
+        box-sizing: border-box;
+      }
 
-        h2, h3, button {
-          font-family: 'Open Sans', sans-serif;
-          font-weight: 500;
-          margin: 0;
-          padding: 0;
-          justify-self: center;
-        }
+      .overlay{
+        align-items: center;
+        background-color: hsl(0, 0%, 0%, 0.7);
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        left: 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+      }
 
-        .alertDelete {
-          background-color: rgba(0, 0, 0, 0.5);
-          height: 100vh;
-          width: 100%;
-          position: fixed;
-          z-index: 10;
-          align-content: center;
-          top: 0;
-          opacity: 0;
-          visibility: hidden;
-          transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-          display: grid;
-        }
+      .overlay.active{
+        opacity: 1;
+        visibility: visible;
+      }
 
-        .alertDelete.active {
-          opacity: 1;
-          visibility: visible;
-        }
+      .validate {
+        background-color: wheat;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+        border: 2px solid;
+        border-color: hsl(0, 0%, 0%);
+        width: 25%;
+      }
 
-        .alert {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-          background-color: white;
-          width: max-content;
-          border-radius: 1rem;
-          justify-self: center;
-          justify-content: center;
-          padding: 2rem;
-        }
+      .option-buttons{
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+      }
 
-        .title h2 {
-          font-size: 2rem;
-          font-weight: 700;
-        }
+    </style>
 
-        .buttons {
-          display: flex;
-          justify-content: space-evenly;
-          align-items: center;
-        }
-
-        button {
-          margin-top: 3rem;
-          padding: 1em 2rem;
-          color: black;
-          font-size: 1rem;
-          font-weight: 600;
-          border-radius: 2rem;
-          border: none;
-          cursor: pointer;
-        }
-
-        button:hover {
-          transform: scale(1.05);
-        }
-
-        .buttonYes {
-          background-color: hsl(0, 100%, 65.1%);
-          color: white;
-        }
-
-        .buttonNo {
-          background-color: hsl(120, 94.4%, 42.2%);
-          color: white;
-        }
-      </style>
-
-      <section class="alertDelete">
-        <div class="alert">
-          <div class="title">
-            <h2>¿Estás seguro de eliminar registro?</h2>
-          </div>
-          <div class="subtitle">
-            <h3>Se eliminará el registro y no se podrá recuperar</h3>
-          </div>
-          <div class="buttons">
-            <div class="yes">
-              <button class="buttonYes" type="button">Eliminar</button>
-            </div>
-            <div class="no">
-              <button class="buttonNo" type="button">Cancelar</button>
-            </div>
-          </div>
+    <div class="overlay">
+      <section class="validate">
+        <div calss= "notice-info">
+          <span>Está seguro que quiere eliminar los datos</span>
         </div>
+        <div class="option-buttons">
+          <div class="acepted-button">
+            <button class="acepted-button">Sí</button>
+          </div>
+          <div class="denied-button">
+            <button>No</button>
+          </div> 
+        </div> 
       </section>
+    </div>
     `
 
-    const buttonYes = this.shadow.querySelector('.buttonYes')
-    const buttonNo = this.shadow.querySelector('.buttonNo')
-    const modal = this.shadow.querySelector('.alertDelete')
+    this.renderButtons()
+  }
 
-    buttonYes?.addEventListener('click', () => {
-      modal.classList.remove('active')
-      this.dispatchEvent(new CustomEvent('confirm-delete', { bubbles: true, composed: true }))
+  renderButtons () {
+    const aceptedButton = this.shadow.querySelector('.acepted-button')
+    const deniedButton = this.shadow.querySelector('.denied-button')
+
+    aceptedButton.addEventListener('click', async () => {
+      try {
+        const response = await fetch(this.endpoint, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error('Error al eliminar el elemento')
+        }
+
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'Elemento eliminado correctamente',
+            type: 'success'
+          }
+        }))
+
+        store.dispatch(refreshTable(this.tableEndpoint))
+
+        this.shadow.querySelector('.overlay').classList.remove('active')
+      } catch (error) {
+        document.dispatchEvent(new CustomEvent('notice', {
+          detail: {
+            message: 'No se han podido eleminar el dato',
+            type: 'error'
+          }
+        }))
+
+        this.shadow.querySelector('.overlay').classList.remove('active')
+      }
     })
 
-    buttonNo?.addEventListener('click', () => {
-      modal.classList.remove('active')
+    deniedButton.addEventListener('click', event => {
+      this.shadow.querySelector('.overlay').classList.remove('active')
     })
   }
 }
 
-customElements.define('delete-model-component', DeleteModel)
+customElements.define('delete-modal-component', DeleteModal)

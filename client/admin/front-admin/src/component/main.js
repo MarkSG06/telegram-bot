@@ -26,16 +26,12 @@ class Main extends HTMLElement {
         padding: 0;
         font-family: inherit;
         color: inherit; 
+        padding: 1rem;
       }
     </style>
 
     <main>
-      <div class="main-column">
-        <slot name="left-column"></slot>
-      </div>
-      <div class="main-column">
-        <slot name="right-column"></slot>
-      </div>
+     <slot></slot>
     </main>
   `
   }
