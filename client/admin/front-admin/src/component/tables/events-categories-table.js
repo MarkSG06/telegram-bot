@@ -1,11 +1,11 @@
 import { store } from '../../redux/store.js'
 import { showFormElement } from '../../redux/crud-slice.js'
 
-class UserTable extends HTMLElement {
+class EventCategoryTable extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/users'
+    this.endpoint = '/api/admin/events-categories'
     this.filterQuery = null
     this.unsubscribe = null
   }
@@ -241,6 +241,9 @@ class UserTable extends HTMLElement {
       .button:hover .tooltip {
         opacity: 1;
       }
+      .table__body span{
+        color: #fff;
+      }
       </style>
 
       <section class="table">
@@ -287,6 +290,12 @@ class UserTable extends HTMLElement {
         </div>
       </section>
     `
+    if (this.data.rows.length === 0) {
+      const tableBody = this.shadow.querySelector('.table__body')
+      const message = document.createElement('span')
+      message.textContent = 'No hay ningún registro'
+      tableBody.appendChild(message)
+    }
 
     this.data.rows.forEach(element => {
       const tableBody = this.shadow.querySelector('.table__body')
@@ -327,19 +336,11 @@ class UserTable extends HTMLElement {
 
       const name = document.createElement('li')
       const nameLabel = document.createElement('span')
-      nameLabel.textContent = 'Nombre: '
+      nameLabel.textContent = 'Categoria: '
       nameLabel.style.fontWeight = 'bold'
       name.appendChild(nameLabel)
       name.append(` ${element.name}`)
       ul.appendChild(name)
-
-      const email = document.createElement('li')
-      const emailLabel = document.createElement('span')
-      emailLabel.textContent = 'Email: '
-      emailLabel.style.fontWeight = 'bold'
-      email.appendChild(emailLabel)
-      email.append(` ${element.email}`)
-      ul.appendChild(email)
 
       const createdAt = document.createElement('li')
       const createdAtLabel = document.createElement('span')
@@ -426,4 +427,4 @@ class UserTable extends HTMLElement {
   }
 }
 
-customElements.define('users-table-component', UserTable)
+customElements.define('events-categories-table-component', EventCategoryTable)

@@ -2,11 +2,11 @@ import isEqual from 'lodash-es/isEqual'
 import { store } from '../../redux/store.js'
 import { refreshTable, showFormElement } from '../../redux/crud-slice.js'
 
-class UserForm extends HTMLElement {
+class EventCategoryForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/users'
+    this.endpoint = '/api/admin/events-categories'
     this.unsubscribe = null
     this.formElementData = null
   }
@@ -30,107 +30,101 @@ class UserForm extends HTMLElement {
 
   render () {
     this.shadow.innerHTML = /* html */`
-      <style>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Nunito Sans", serif;
+      }
 
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: "Nunito Sans", serif;
-        }
+      /* SECTION FORM */
+      .toolbar {
+        padding-right: 1rem;
+        align-items: center;
+        border-radius: 5px;
+        height: 2rem;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        background-color: hsl(0, 0%, 100%);
+      }
 
-        /* SECTION FORM */
-        .toolbar {
-          padding-right: 1rem;
-          align-items: center;
-          border-radius: 5px;
-          height: 2rem;
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          background-color: hsl(0, 0%, 100%);
-        }
+      .toolbarSVGs {
+        display: flex;
+        gap: 1rem;
+        padding: 0 0.5rem;
+      }
 
-        .toolbarSVGs {
-          display: flex;
-          gap: 1rem;
-          padding: 0 0.5rem;
-        }
+      .toolbarSVGs svg {
+        width: 2rem;
+        height: 2rem;
+        cursor: pointer;
+        color: hsl(271, 76%, 53%);
+      }
 
-        .toolbarSVGs svg {
-          width: 2rem;
-          height: 2rem;
-          cursor: pointer;
-          color: hsl(271, 76%, 53%);
-        }
+      .tabs{
+        display: flex;
+        height: 100%;
+      }
 
-        .tabs{
-          display: flex;
-          height: 100%;
-        }
+      /* ESTILO BOTON GENERAL TOOLBAR */
 
-        /* ESTILO BOTON GENERAL TOOLBAR */
+      .tab{
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+        height: 100%;
+        padding: 0 0.5rem;
+      }
 
-        .tab{
-          align-items: center;
-          cursor: pointer;
-          display: flex;
-          height: 100%;
-          padding: 0 0.5rem;
-        }
+      .tab{
+        color: hsl(271, 76%, 53%);
+        font-weight: 600;
+      }
 
-        .tab{
-          color: hsl(271, 76%, 53%);
-          font-weight: 600;
-        }
+      .active-tab{
+        color: hsl(0, 0%, 100%);
+        background-color: hsl(271, 76%, 53%);
 
-        .active-tab{
-          color: hsl(0, 0%, 100%);
-          background-color: hsl(271, 76%, 53%);
+      }
 
-        }
+      /* SECTION MAIN */
 
-        .tab-content{
-          
-        }
+      .tab-content {
+        display: none;
+      }
 
-   
-        /* SECTION MAIN */
+      .tab-content.active{
+        display: flex;
+        gap: 2rem; 
+        justify-self: center;
+        width: 95%;
+      }
 
-        .tab-content {
-          display: none;
-        }
+      .fieldGroup {
+        display: flex;
+        flex-direction: column;
+        flex: 1; 
+      }
 
-        .tab-content.active{
-          display: flex;
-          gap: 2rem; 
-          justify-self: center;
-          width: 95%;
-        }
-
-        .fieldGroup {
-          display: flex;
-          flex-direction: column;
-          flex: 1; 
-        }
-
-        .sectionMain input {
-          padding: 0.5rem;
-          border-radius: 5px;
-          font-family: Verdana, Geneva, Tahoma, sans-serif;
-          border: none;
-          width: 100%;
-        }
-        .sectionMain label{
-          color: hsl(0, 0%, 100%);
-          font-family: Verdana, Geneva, Tahoma, sans-serif;
-          padding: 1rem 0 1rem 0;
-        }
-        
-        .button{
-          align-items: center;
-          display: flex;
-        }
+      .sectionMain input {
+        padding: 0.5rem;
+        border-radius: 5px;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        border: none;
+        width: 100%;
+      }
+      .sectionMain label{
+        color: hsl(0, 0%, 100%);
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        padding: 1rem 0 1rem 0;
+      }
+      
+      .button{
+        align-items: center;
+        display: flex;
+      }
 
       .tooltip {
         position: absolute;
@@ -159,8 +153,6 @@ class UserForm extends HTMLElement {
         border: 1px solid red;
         background-color:rgb(255, 225, 143);
       }
-
-   
 
       .validation-errors{
         display: none;
@@ -198,15 +190,16 @@ class UserForm extends HTMLElement {
         height: 2rem;
         width: 2rem;
       }
+
+      .subdata{
+        width: 100%;
+      }
       </style>
       <div class="form">
         <div class="toolbar">
           <div class="tabs">
             <div class="tab active-tab" data-tab="general">
               <span>General</span>
-            </div>
-            <div class="tab" data-tab="images">
-              <span>Imágenes</span>
             </div>
           </div>
           <div class="toolbarSVGs">
@@ -245,18 +238,8 @@ class UserForm extends HTMLElement {
             <input type="hidden" name="id">
             <div class="tab-content active" data-tab="general">
               <div class="fieldGroup">
-                <label for="name">Nombre</label>
+                <label for="name">Categoria</label>
                 <input type="text" id="name" name="name">
-              </div>
-              <div class="fieldGroup">
-                <label for="email">Email</label>
-                <input type="text" id="email" name="email">
-              </div>
-            </div>
-            <div class="tab-content" data-tab="images">
-              <div class="fieldGroup">
-                <label for="image">Imagen</label>
-                <input type="file" id="image" name="image">
               </div>
             </div>
           </form>
@@ -279,7 +262,6 @@ class UserForm extends HTMLElement {
 
       if (event.target.closest('.save-button')) {
         const form = this.shadow.querySelector('form')
-
         const formDataJson = {}
 
         for (const [key, value] of new FormData(form).entries()) {
@@ -306,7 +288,6 @@ class UserForm extends HTMLElement {
           }))
 
           store.dispatch(refreshTable(this.endpoint))
-
           this.resetForm()
 
           document.dispatchEvent(new CustomEvent('notice', {
@@ -382,4 +363,4 @@ class UserForm extends HTMLElement {
   }
 }
 
-customElements.define('users-form-component', UserForm)
+customElements.define('events-categories-form-component', EventCategoryForm)

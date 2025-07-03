@@ -3,27 +3,15 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('sales', {
+    await queryInterface.createTable('event_categories', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      totalBasePrice: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false
-      },
-      totalTax: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false
-      },
-      totalPrice: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false
-      },
-      issueDate: {
-        type: Sequelize.DATE,
+      name: {
+        type: Sequelize.STRING,
         allowNull: false
       },
       createdAt: {
@@ -41,6 +29,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('sales')
+    await queryInterface.dropTable('event_categories')
   }
 }
