@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('Bot',
+  const Bot = sequelize.define('Bot',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -89,9 +89,9 @@ module.exports = function (sequelize, DataTypes) {
     }
   )
 
-  Model.associate = function (models) {
-
+  Bot.associate = function (models) {
+    Bot.hasMany(models.CustomerBot, { as: 'customerBot', foreignKey: 'botId' })
   }
 
-  return Model
+  return Bot
 }

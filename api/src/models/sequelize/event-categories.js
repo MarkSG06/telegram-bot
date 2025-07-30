@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('EventCategory',
+  const EventCategory = sequelize.define('EventCategory',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -53,9 +53,9 @@ module.exports = function (sequelize, DataTypes) {
     }
   )
 
-  Model.associate = function (models) {
-
+  EventCategory.associate = function (models) {
+    EventCategory.hasMany(models.Event, { as: 'event', foreignKey: 'eventCategoryId' })
   }
 
-  return Model
+  return EventCategory
 }

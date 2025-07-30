@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('events',
+  const Event = sequelize.define('Event',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -64,14 +64,42 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'events_promotorId',
+          using: 'BTREE',
+          fields: [
+            { name: 'promotorId' }
+          ]
+        },
+        {
+          name: 'events_townId',
+          using: 'BTREE',
+          fields: [
+            { name: 'townId' }
+          ]
+        },
+        {
+          name: 'events_spotId',
+          using: 'BTREE',
+          fields: [
+            { name: 'spotId' }
+          ]
+        },
+        {
+          name: 'events_categoryId',
+          using: 'BTREE',
+          fields: [
+            { name: 'categoryId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
+  Event.associate = function (models) {
 
   }
 
-  return Model
+  return Event
 }

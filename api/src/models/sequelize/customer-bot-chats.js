@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('customer-bot-chats',
+  const CustomerBotChat = sequelize.define('CustomerBotChat',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      customerId: {
+      customerBotId: {
         type: DataTypes.INTEGER,
         allowNull: false
       },
@@ -48,14 +48,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'customer-bot-chats_customerId',
+          using: 'BTREE',
+          fields: [
+            { name: 'customerId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  CustomerBotChat.associate = function (models) {
+    CustomerBotChat.belongsTo(models.CustomerBot, { as: 'customerBot', foreignKey: 'customerBotId' })
   }
 
-  return Model
+  return CustomerBotChat
 }

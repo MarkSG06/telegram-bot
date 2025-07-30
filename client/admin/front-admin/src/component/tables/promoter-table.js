@@ -1,7 +1,7 @@
 import { store } from '../../redux/store.js'
 import { showFormElement } from '../../redux/crud-slice.js'
 
-class UserTable extends HTMLElement {
+class PromoterTable extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
@@ -426,4 +426,4 @@ class UserTable extends HTMLElement {
   }
 }
 
-customElements.define('promoters-table-component', UserTable)
+customElements.define('promoters-table-component', PromoterTable)

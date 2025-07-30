@@ -38,6 +38,9 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
+    await queryInterface.addIndex('user-credentials', ['userId'], {
+      name: 'user-credentials_userId'
+    })
   },
 
   down: async (queryInterface, Sequelize) => {

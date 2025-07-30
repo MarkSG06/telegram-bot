@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('towns',
+  const Town = sequelize.define('Town',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -45,9 +45,11 @@ module.exports = function (sequelize, DataTypes) {
     }
   )
 
-  Model.associate = function (models) {
-
+  Town.associate = function (models) {
+    Town.hasMany(models.Customer, { as: 'customers', foreignKey: 'townId' })
+    Town.hasMany(models.Event, { as: 'events', foreignKey: 'townId' })
+    Town.hasMany(models.Spot, { as: 'spots', foreignKey: 'townId' })
   }
 
-  return Model
+  return Town
 }

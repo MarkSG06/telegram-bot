@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('SentEmails',
+  const SentEmail = sequelize.define('SentEmail',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -60,14 +60,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'sent-emails_userId',
+          using: 'BTREE',
+          fields: [
+            { name: 'userId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  SentEmail.associate = function (models) {
+    SentEmail.belongsTo(models.User, { as: 'user', foreignKey: 'userId' })
   }
 
-  return Model
+  return SentEmail
 }

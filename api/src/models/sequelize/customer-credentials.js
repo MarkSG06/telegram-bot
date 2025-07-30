@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('CustomerCredentials',
+  const CustomerCredential = sequelize.define('CustomerCredential',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -53,14 +53,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'customer-credentials_customerId',
+          using: 'BTREE',
+          fields: [
+            { name: 'customerId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  CustomerCredential.associate = function (models) {
+    CustomerCredential.belongsTo(models.Customer, { as: 'customer', foreignKey: 'customerId' })
   }
 
-  return Model
+  return CustomerCredential
 }

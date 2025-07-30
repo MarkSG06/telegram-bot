@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserActivationToken',
+  const UserActivationToken = sequelize.define('UserActivationToken',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -52,14 +52,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'user-activation-token_userId',
+          using: 'BTREE',
+          fields: [
+            { name: 'userId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  UserActivationToken.associate = function (models) {
+    UserActivationToken.belongsTo(models.User, { as: 'user', foreignKey: 'userId' })
   }
 
-  return Model
+  return UserActivationToken
 }

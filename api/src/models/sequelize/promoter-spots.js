@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('PromoterSpots',
+  const PromoterSpot = sequelize.define('PromoterSpot',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -44,14 +44,29 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'promoter-spots_promoterId',
+          using: 'BTREE',
+          fields: [
+            { name: 'promoterId' }
+          ]
+        },
+        {
+          name: 'promoter-spots_spotId',
+          using: 'BTREE',
+          fields: [
+            { name: 'spotId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  PromoterSpot.associate = function (models) {
+    PromoterSpot.belongsTo(models.Promoter, { as: 'promoter', foreignKey: 'promoterId' })
+    PromoterSpot.belongsTo(models.Spot, { as: 'spot', foreignKey: 'spotId' })
   }
 
-  return Model
+  return PromoterSpot
 }

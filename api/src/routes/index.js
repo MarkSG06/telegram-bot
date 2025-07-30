@@ -16,7 +16,6 @@ router.use('/admin/event-prices', require('./admin/event-prices'))
 router.use('/admin/events', require('./admin/events'))
 router.use('/admin/languages', require('./admin/languages'))
 router.use('/admin/promoter-spots', require('./admin/promoter-spots'))
-router.use('/admin/sales', require('./admin/sales'))
 router.use('/admin/spots', require('./admin/spots'))
 router.use('/admin/towns', require('./admin/towns'))
 

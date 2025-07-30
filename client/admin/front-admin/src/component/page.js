@@ -26,6 +26,10 @@ class PageComponent extends HTMLElement {
       '/admin/categorias-de-eventos': 'events-categories.html',
       '/admin/bots': 'bots.html',
       '/admin/promoters': 'promoters.html',
+      '/admin/faqs': 'faqs.html',
+      '/admin/idiomas': 'languages.html',
+      '/admin/spots': 'spots.html',
+      '/admin/customers': 'customers.html',
     }
 
     const filename = routes[path] || '404.html'

@@ -36,7 +36,19 @@ exports.findAll = async (req, res, next) => {
       attributes: ['id', 'customerId', 'botId', 'createdAt', 'updatedAt'],
       limit,
       offset,
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: sequelizeDb.Customers,
+          as: 'customer',
+          attributes: ['id', 'name', 'email']
+        },
+        {
+          model: sequelizeDb.Bots,
+          as: 'bot',
+          attributes: ['id', 'name']
+        }
+      ]
     })
 
     result.meta = {

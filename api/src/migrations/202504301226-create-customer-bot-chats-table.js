@@ -34,6 +34,9 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
+    await queryInterface.addIndex('customer-bot-chats', ['customerBotId'], {
+      name: 'customer-bot-chats_customerBotId'
+    })
   },
 
   down: async (queryInterface, Sequelize) => {

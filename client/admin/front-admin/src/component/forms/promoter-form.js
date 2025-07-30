@@ -2,7 +2,7 @@ import isEqual from 'lodash-es/isEqual'
 import { store } from '../../redux/store.js'
 import { refreshTable, showFormElement } from '../../redux/crud-slice.js'
 
-class UserForm extends HTMLElement {
+class PromoterForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
@@ -373,4 +373,4 @@ class UserForm extends HTMLElement {
   }
 }
 
-customElements.define('promoters-form-component', UserForm)
+customElements.define('promoters-form-component', PromoterForm)

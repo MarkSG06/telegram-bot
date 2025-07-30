@@ -30,6 +30,12 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
+    await queryInterface.addIndex('customer-bots', ['customerId'], {
+      name: 'customer-bots_customerId'
+    })
+    await queryInterface.addIndex('customer-bots', ['botId'], {
+      name: 'customer-bots_botId'
+    })
   },
 
   down: async (queryInterface, Sequelize) => {

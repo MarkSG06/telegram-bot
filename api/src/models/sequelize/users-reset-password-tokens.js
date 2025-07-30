@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserResetPasswordTokens',
+  const UserResetPasswordTokens = sequelize.define('UserResetPasswordTokens',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -52,14 +52,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'users-reset-password-tokens_userId',
+          using: 'BTREE',
+          fields: [
+            { name: 'userId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  UserResetPasswordTokens.associate = function (models) {
+    UserResetPasswordTokens.belongsTo(models.User, { as: 'user', foreignKey: 'userId' })
   }
 
-  return Model
+  return UserResetPasswordTokens
 }

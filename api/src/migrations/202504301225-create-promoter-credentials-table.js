@@ -39,6 +39,9 @@ module.exports = {
         type: Sequelize.DATE
       }
     })
+    await queryInterface.addIndex('promoter-credentials', ['promoterId'], {
+      name: 'promoter-credentials_promoterId'
+    })
   },
 
   down: async (queryInterface, Sequelize) => {

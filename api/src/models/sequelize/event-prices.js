@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('event-prices',
+  const EventPrices = sequelize.define('EventPrices',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -48,14 +48,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'event-prices_eventId',
+          using: 'BTREE',
+          fields: [
+            { name: 'eventId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  EventPrices.associate = function (models) {
+    EventPrices.belongsTo(models.Event, { as: 'event', foreignKey: 'eventId' })
   }
 
-  return Model
+  return EventPrices
 }

@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('PromoterActivationTokens',
+  const PromoterActivationToken = sequelize.define('PromoterActivationTokens',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -52,14 +52,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'promoter-activation-tokens_promoterId',
+          using: 'BTREE',
+          fields: [
+            { name: 'promoterId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  PromoterActivationToken.associate = function (models) {
+    PromoterActivationToken.belongsTo(models.Promoter, { as: 'promoter', foreignKey: 'promoterId' })
   }
 
-  return Model
+  return PromoterActivationToken
 }

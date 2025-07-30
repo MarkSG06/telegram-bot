@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('emails',
+  const Emails = sequelize.define('Email',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -49,9 +49,8 @@ module.exports = function (sequelize, DataTypes) {
     }
   )
 
-  Model.associate = function (models) {
-
+  Emails.associate = function (models) {
   }
 
-  return Model
+  return Emails
 }

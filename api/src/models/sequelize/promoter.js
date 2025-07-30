@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('Promoter',
+  const Promoter = sequelize.define('Promoter',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -68,9 +68,10 @@ module.exports = function (sequelize, DataTypes) {
     }
   )
 
-  Model.associate = function (models) {
-
+  Promoter.associate = function (models) {
+    Promoter.hasMany(models.Event, { as: 'events', foreignKey: 'promoterId' })
+    Promoter.hasMany(models.Customer, { as: 'customers', foreignKey: 'promoterId' })
   }
 
-  return Model
+  return Promoter
 }

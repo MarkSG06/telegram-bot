@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredentials',
+  const UserCredentials = sequelize.define('UserCredentials',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -52,14 +52,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'user-credentials_userId',
+          using: 'BTREE',
+          fields: [
+            { name: 'userId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  UserCredentials.associate = function (models) {
+    UserCredentials.belongsTo(models.User, { as: 'user', foreignKey: 'userId' })
   }
 
-  return Model
+  return UserCredentials
 }

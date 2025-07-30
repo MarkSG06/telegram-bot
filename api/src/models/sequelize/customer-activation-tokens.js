@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('CustomerActivationTokens',
+  const CustomerActionToken = sequelize.define('CustomerActivationToken',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -52,14 +52,21 @@ module.exports = function (sequelize, DataTypes) {
           fields: [
             { name: 'id' }
           ]
+        },
+        {
+          name: 'customer-activation-tokens_customerId',
+          using: 'BTREE',
+          fields: [
+            { name: 'customerId' }
+          ]
         }
       ]
     }
   )
 
-  Model.associate = function (models) {
-
+  CustomerActionToken.associate = function (models) {
+    CustomerActionToken.belongsTo(models.Customer, { as: 'customer', foreignKey: 'customerId' })
   }
 
-  return Model
+  return CustomerActionToken
 }
