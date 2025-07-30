@@ -4,7 +4,7 @@ const app = express();
 
 const options = {
   target: 'http://127.0.0.1:8080', 
-  cookieDomainRewrite: 'dev-youthing.com', 
+  cookieDomainRewrite: 'dev-telegram-bot.com', 
   changeOrigin: true,
   logLevel: 'debug',
   onProxyReq: function(proxyReq, req, res) {
