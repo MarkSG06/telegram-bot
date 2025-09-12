@@ -106,12 +106,8 @@ class FaqsFilter extends HTMLElement {
           <form>
             <input type="hidden" name="id">
             <div class="fieldGroup">
-              <label for="name">Nombre</label>
-              <input type="text" id="name" name="name">
-            </div>
-            <div class="fieldGroup">
-              <label for="email">Email</label>
-              <input type="text" id="email" name="email">
+              <label for="name">Título</label>
+              <input type="text" id="name" name="title">
             </div>
           </form>
         </div>

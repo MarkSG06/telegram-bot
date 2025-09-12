@@ -9,18 +9,19 @@ class FeaturesTitles extends HTMLElement {
     await this.render()
   }
 
-  loadData () {
-    this.data = [
-      {
-        title: 'Filtra',
-      },
-      {
-        title: 'Automatiza',
-      },
-      {
-        title: 'Ahorra',
+  async loadData () {
+    try {
+      const response = await fetch('/api/customer/features-titles')
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
       }
-    ]
+
+      this.data = await response.json()
+    } catch (error) {
+      console.error('Error loading data:', error)
+      this.data = null
+    }
   }
 
   render () {

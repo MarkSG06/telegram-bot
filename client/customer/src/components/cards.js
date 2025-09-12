@@ -9,49 +9,19 @@ class Cards extends HTMLElement {
     await this.render()
   }
 
-  loadData () {
-    this.data = {
-      title: 'Fácil de usar',
-      description: 'Tan simple como decir qué productos buscas, las características que te interesan y cuanto estás dispuesto a pagas. Nuestro bot se encargará de buscarlo por ti y te notificará cuando encuentre algo que se ajuste a tus preferencias.',
-      images: {
-        xs: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        sm: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        md: './images/airpods/go_airpods__ed69m4vdask2_large.png',
-        lg: './images/airpods/go_airpods__ed69m4vdask2_large.png'
+  async loadData () {
+    try {
+      const response = await fetch('/api/customer/card')
 
-      },
-      cards: [
-        {
-          title: 'Siri, text Rigo, "I\'m on my way"',
-          color: 'white',
-          images: {
-            xs: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            sm: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            md: './images/text/go_iphone__rgcqxe88k6y6_small.png',
-            lg: './images/text/go_iphone__rgcqxe88k6y6_small.png'
-          }
-        },
-        {
-          title: 'Siri, remind me to water plants when I get home',
-          color: 'black',
-          images: {
-            xs: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            sm: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            md: './images/remind/go_tile_1__c3xn44p0q22q_large.png',
-            lg: './images/remind/go_tile_1__c3xn44p0q22q_large.png'
-          }
-        },
-        {
-          title: 'Siri, text Rigo, "I\'m on my way"',
-          color: 'white',
-          images: {
-            xs: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            sm: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            md: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg',
-            lg: './images/helpful/go_tile_2__r3t0enbq5lea_large.jpg'
-          }
-        }
-      ]
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
+      }
+
+      this.data = await response.json()
+      console.log(this.data)
+    } catch (error) {
+      console.error('Error loading data:', error)
+      this.data = null
     }
   }
 
@@ -59,6 +29,25 @@ class Cards extends HTMLElement {
     this.shadow.innerHTML =
     /* html */`
     <style>
+
+      *{
+        box-sizing: border-box;
+      }
+
+      h1, h2, h3, h4, h5, h6, p{
+        margin: 0;
+      }
+
+      h1, h2, h3, h4, h5, h6, p, a, span, li, label, input, button{
+        font-family: "Nunito Sans", serif;
+        font-optical-sizing: auto;
+      }
+
+      img{
+        object-fit: cover;
+        width: 100%;
+      }
+
       .cards{
         align-items: center;
         background: linear-gradient(hsl(240, 33%, 99%), hsl(334, 60%, 83%), hsl(215, 58%, 34%));
@@ -227,20 +216,6 @@ class Cards extends HTMLElement {
       .card-image img{
         display: block;
       }
-      h1, h2, h3, h4, h5, h6, p, span{
-        margin: 0;
-      }
-      *{
-        box-sizing: border-box;
-      }
-      img{
-        object-fit: cover;
-        width: 100%;
-      }
-      h1, h2, h3, h4, h5, h6, p, a, span, li, label, input, button{
-        font-family: "Nunito Sans", serif;
-        font-optical-sizing: auto;
-      }
     </style>
 
     <section class="cards">
@@ -250,70 +225,64 @@ class Cards extends HTMLElement {
             <h2>${this.data.title}</h2>
           </div>
           <div class="cards-image">
-            <picture>
-              <source srcset="${this.data.lg}" media="(max-width: 1920px)"
-              <source srcset="${this.data.xs}" media="(max-width:480px)" >
-              <source srcset="${this.data.sm}" media="(max-width:768px)" >
-              <source srcset="${this.data.md}" media="(min-width: 1024px)">
-              <img src="${this.data.images.xs}" alt="foto">
-            </picture>
+            
           </div>
         </div>
         <div class="cards-description">
-          <p>${this.data.description}</p>
+          <p>
+            ${this.data.description}
+          </p>
         </div>
       </div>
-
-      <div class="cards-list">
-
-      </div>
+      <div class="cards-list"></div>
     </section>
-    
     `
-    this.data.forEach(card => {
-      const cardsContainers = this.shadow.querySelector('.cards-list')
-      const cardContainer = document.createElement('div')
-      cardContainer.classList.add('card', card.color)
-      cardsContainers.appendChild(cardContainer)
 
-      const cardTitleContainer = document.createElement('div')
-      cardTitleContainer.classList.add('card-title')
-      cardContainer.appendChild(cardTitleContainer)
+    this.data.cards?.forEach(card => {
+      const cardsList = this.shadow.querySelector('.cards-list')
+      const cardElement = document.createElement('div')
+      cardElement.classList.add('card', card.color)
+      cardsList.appendChild(cardElement)
 
-      const cardTitle = document.createElement('h4')
-      cardTitle.textContent = card.title
+      const cardTitle = document.createElement('div')
+      cardTitle.classList.add('card-title')
+      cardElement.appendChild(cardTitle)
 
-      const imageContent = document.createElement('div')
-      imageContent.classList.add('cards-image')
-      cardContainer.appendChild(imageContent)
+      const cardTitleH4 = document.createElement('h4')
+      cardTitleH4.textContent = card.title
+      cardTitle.appendChild(cardTitleH4)
+
+      const cardImage = document.createElement('div')
+      cardImage.classList.add('card-image')
+      cardElement.appendChild(cardImage)
 
       const picture = document.createElement('picture')
-      imageContent.appendChild(picture)
+      cardImage.appendChild(picture)
 
-      const sourceXS = document.createElement('source')
-      sourceXS.srcset = card.images.xs
-      sourceXS.media = '(max-width: 480px)'
-      sourceXS.appendChild(imageContent)
+      const sourceLg = document.createElement('source')
+      sourceLg.srcset = card.images.lg
+      sourceLg.media = '(min-width: 1920px)'
+      picture.appendChild(sourceLg)
 
-      const sourceSM = document.createElement('source')
-      sourceSM.srcset = card.images.sm
-      sourceSM.media = '(max-width: 768px)'
-      sourceSM.appendChild(imageContent)
+      const sourceMd = document.createElement('source')
+      sourceMd.srcset = card.images.md
+      sourceMd.media = '(min-width: 1024px)'
+      picture.appendChild(sourceMd)
 
-      const sourceMD = document.createElement('source')
-      sourceMD.srcset = card.images.md
-      sourceMD.media = '(max-width: 1024px)'
-      sourceMD.appendChild(imageContent)
+      const sourceSm = document.createElement('source')
+      sourceSm.srcset = card.images.sm
+      sourceSm.media = '(min-width: 768px)'
+      picture.appendChild(sourceSm)
 
-      const sourceLG = document.createElement('source')
-      sourceLG.srcset = card.images.lg
-      sourceLG.media = '(max-width: 1920px)'
-      sourceLG.appendChild(imageContent)
+      const sourceXs = document.createElement('source')
+      sourceXs.srcset = card.images.xs
+      sourceXs.media = '(min-width: 480px)'
+      picture.appendChild(sourceXs)
 
-      const image = document.createElement('image')
-      image.src = card.images.xs
-      image.alt = card.images.alt
-      image.appendChild(imageContent)
+      const img = document.createElement('img')
+      img.src = card.images.xs
+      img.alt = 'Imagen de prueba de Picsum'
+      picture.appendChild(img)
     })
   }
 }

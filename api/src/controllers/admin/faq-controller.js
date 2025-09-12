@@ -4,6 +4,7 @@ const Faq = mongooseDb.Faq
 
 exports.create = async (req, res, next) => {
   try {
+    console.log(req.body)
     let data = await Faq.create(req.body)
     data = data.toObject()
     data.id = data._id

@@ -242,24 +242,8 @@ class CustomersForm extends HTMLElement {
             <input type="hidden" name="id">
             <div class="tab-content active" data-tab="general">
               <div class="fieldGroup">
-                <label for="name">Nombre</label>
-                <input type="text" id="name" name="name">
-              </div>
-              <div class="fieldGroup">
                 <label for="email">Email</label>
                 <input type="text" id="email" name="email">
-              </div>
-              <div class="fieldGroup">
-                <label for="telephone">Telephone</label>
-                <input type="text" id="telephone" name="telephone">
-              </div>
-              <div class="fieldGroup">
-                <label for="prefix">Prefix</label>
-                <input type="text" id="prefix" name="prefix">
-              </div>
-              <div class="fieldGroup">
-                <label for="birthdate">Birthdate</label>
-                <input type="date" id="birthdate" name="birthdate">
               </div>
             </div>
           </form>

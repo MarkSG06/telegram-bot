@@ -30,6 +30,10 @@ class PageComponent extends HTMLElement {
       '/admin/idiomas': 'languages.html',
       '/admin/spots': 'spots.html',
       '/admin/customers': 'customers.html',
+      '/admin/features': 'features.html',
+      '/admin/hero': 'hero.html',
+      '/admin/card': 'card.html',
+      '/admin/subscription': 'subscription.html',
     }
 
     const filename = routes[path] || '404.html'

@@ -6,7 +6,7 @@ class FaqsForm extends HTMLElement {
   constructor () {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/admin/faq'
+    this.endpoint = '/api/admin/faqs'
     this.unsubscribe = null
     this.formElementData = null
   }
@@ -114,13 +114,15 @@ class FaqsForm extends HTMLElement {
           flex: 1; 
         }
 
-        .sectionMain input {
+        /* inputs de texto normales */
+        .sectionMain input, textarea {
           padding: 0.5rem;
           border-radius: 5px;
           font-family: Verdana, Geneva, Tahoma, sans-serif;
           border: none;
           width: 100%;
         }
+
         .sectionMain label{
           color: hsl(0, 0%, 100%);
           font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -198,6 +200,16 @@ class FaqsForm extends HTMLElement {
         height: 2rem;
         width: 2rem;
       }
+
+      textarea {
+        height: 10lh;
+      }
+      .check[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #00cc66; /* color de check (verde) */
+        cursor: pointer;
+      }
       </style>
       <div class="form">
         <div class="toolbar">
@@ -242,12 +254,15 @@ class FaqsForm extends HTMLElement {
             <input type="hidden" name="id">
             <div class="tab-content active" data-tab="general">
               <div class="fieldGroup">
-                <label for="name">Nombre</label>
-                <input type="text" id="name" name="name">
-              </div>
-              <div class="fieldGroup">
-                <label for="email">Email</label>
-                <input type="text" id="email" name="email">
+                <label for="isActive">Activo/Desactivado</label>
+                <select name="isActive" id="isActive">
+                  <option value=true>Activo</option>
+                  <option value=false>Desactivado</option>
+                </select>
+                <label for="name">Título</label>
+                <input type="text" id="name" name="title">
+                <label for="email">Descripción</label>
+                <textarea name="description"></textarea>
               </div>
             </div>
           </form>
@@ -265,7 +280,7 @@ class FaqsForm extends HTMLElement {
       }
     })
 
-    this.shadow.querySelector('.form').addEventListener('click', async event => {
+    this.shadow.querySelector('.toolbar').addEventListener('click', async event => {
       event.preventDefault()
 
       if (event.target.closest('.save-button')) {

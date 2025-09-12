@@ -33,7 +33,7 @@ exports.findAll = async (req, res, next) => {
 
     const result = await Customer.findAndCountAll({
       where: condition,
-      attributes: ['id', 'name', 'email', 'prefix', 'telephone', 'birthdate', 'createdAt', 'updatedAt'],
+      attributes: ['id', 'email', 'createdAt', 'updatedAt'],
       limit,
       offset,
       order: [['createdAt', 'DESC']]

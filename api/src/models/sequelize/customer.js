@@ -7,26 +7,20 @@ module.exports = function (sequelize, DataTypes) {
         primaryKey: true,
         allowNull: false
       },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
-      },
-      telephone: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      prefix: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      birthdate: {
-        type: DataTypes.DATE,
-        allowNull: false
+        unique: {
+          msg: 'Correo ya está registrado en la base de datos',
+        },
+        validate: {
+          isEmail: {
+            msg: 'Agrega un correo válido'
+          },
+          notEmpty: {
+            msg: 'Por favor ingrese un correo electronico'
+          }
+        }
       },
       createdAt: {
         type: DataTypes.DATE,

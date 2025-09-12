@@ -9,14 +9,20 @@ class SubscriptionForm extends HTMLElement {
     await this.render()
   }
 
-  loadData () {
-    this.data = {
-      title: 'promote a new product or service',
-      info: 'star your business today with a great and strong landing page mado to enchance the marketers workflow.',
-      featured: 'subscripción por un año',
-      start: 'Empieza a usarlo',
-      instructions: 'Te enviaremos un correo electrónico con las instrucciones para que puedas comenzar a utilizar nuestro bot.',
-      textButton: 'Subscribirme'
+  async loadData () {
+    try {
+      const response = await fetch('/api/customer/subscription')
+
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`)
+      }
+
+      this.data = await response.json()
+
+      console.log('Hero data loaded:', this.data)
+    } catch (error) {
+      console.error('Error loading data:', error)
+      this.data = {}
     }
   }
 
@@ -235,6 +241,76 @@ class SubscriptionForm extends HTMLElement {
       .form-element-button button:hover{
         background-color: hsl(200, 77%, 42%);
       }
+      .v-active input{
+        border: 1px solid red;
+        background-color:rgb(255, 225, 143);
+      }
+
+   
+
+      .validation-errors{
+        display: none;
+        color: #000000;
+        padding: 0.5rem 0.7rem;
+        margin-bottom: 1rem;
+        border: 2px solid #7a2727ff;
+        border-radius: 0.5rem;
+        position: relative;
+      }
+
+      .validation-errors.active{
+        display: block;
+      }
+
+      .validation-errors ul{
+        list-style: none;
+        padding: 0;
+      }
+
+      .validation-errors p{
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+
+      .validation-errors .close-validation-errors{
+        cursor: pointer;
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
+      }
+
+      .close-validation-errors svg{
+        fill: hsla(0, 52%, 32%, 1.00);
+        height: 2rem;
+        width: 2rem;
+      }
+      .button{
+          align-items: center;
+          display: flex;
+        }
+
+      .tooltip {
+        position: absolute;
+        background-color: #383838;
+        color: #ffffff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        transform: translateY(-120%);
+        margin-bottom: 0.25rem;
+        opacity: 0;
+        transition: opacity 0.2s ease;  
+        z-index: 10;
+      }
+
+      .button {
+        position: relative;
+      }
+
+      .button:hover .tooltip {
+        opacity: 1;
+      }
     </style>
 
     <section class="subscription-form">
@@ -243,20 +319,20 @@ class SubscriptionForm extends HTMLElement {
           <h3>${this.data.title}</h3>
         </div>
         <div class="explanation-info">
-          <p>${this.data.info}</p>
+          <p>${this.data.description}</p>
         </div>
         <div class="explanation-featured">
-          <span>${this.data.featured}</span>
+          <span>${this.data.tag}</span>
         </div>
       </div>
       <div class="form-container">
         <div class="info-area">
           <div class="info-area-text">
             <div class="info-area-title">
-              <h4>${this.data.start}</h4>
+              <h4>${this.data.formTitle}</h4>
             </div>
             <div class="info-area-subtitle">
-              <span>${this.data.instructions}</span>
+              <span>${this.data.formDescription}</span>
             </div>
           </div>
           <div class="info-area-icon">
@@ -264,20 +340,95 @@ class SubscriptionForm extends HTMLElement {
           </div>
         </div>
         <div class="form">
+          <div class="validation-errors">
+            <p>Error en la validación, revisa los siguientes errores: </p>
+            <ul></ul>
+            <div class="button close-validation-errors">
+              <span class="tooltip">Cerrar</span>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" /></svg>
+            </div>
+          </div>
           <form>
             <div class="form-element">
               <div class="form-element-input">
-                <input type="text" placeholder="Dirección de correo">
+                <input type="text" placeholder='${this.data.inputPlaceholder}' />
               </div>
             </div>
             <div class="form-element-button">
-              <button>${this.data.textButton}</button>
+              <a href="${this.data.buttonLink}">
+                <button>${this.data.buttonText}</button>
+              </a>
             </div>
           </form>
         </div>
       </div>
     </section>
     `
+    this.addEventListeners()
+  }
+
+  addEventListeners () {
+    const form = this.shadow.querySelector('form')
+    const input = this.shadow.querySelector('input')
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault()
+
+      const email = input.value.trim()
+
+      try {
+        const response = await fetch('/api/admin/customers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email })
+        })
+
+        if (!response.ok) {
+          // si es error 422 (validación), lo mostramos
+          if (response.status === 422) {
+            const data = await response.json()
+            this.showValidationErrors(data.message)
+            return
+          }
+          throw new Error('Error en la suscripción')
+        }
+
+        const result = await response.json()
+        console.log('Suscripción correcta:', result)
+        form.reset()
+        this.closeValidationErrors()
+      } catch (error) {
+        console.log('Error al enviar la suscripción:', error)
+      }
+    })
+
+    // botón cerrar errores
+    this.shadow.addEventListener('click', (event) => {
+      if (event.target.closest('.close-validation-errors')) {
+        this.closeValidationErrors()
+      }
+    })
+  }
+
+  // === AÑADIDO ===
+  showValidationErrors (errors) {
+    const errorsContainer = this.shadow.querySelector('.validation-errors')
+    const errorsList = this.shadow.querySelector('.validation-errors ul')
+    errorsList.innerHTML = ''
+
+    errors.forEach(error => {
+      const li = document.createElement('li')
+      li.textContent = error.message
+      errorsList.appendChild(li)
+    })
+
+    errorsContainer.classList.add('active')
+  }
+
+  closeValidationErrors () {
+    this.shadow.querySelector('.validation-errors').classList.remove('active')
   }
 }
 

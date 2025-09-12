@@ -327,19 +327,11 @@ class FaqsTable extends HTMLElement {
 
       const name = document.createElement('li')
       const nameLabel = document.createElement('span')
-      nameLabel.textContent = 'Nombre: '
+      nameLabel.textContent = 'Título: '
       nameLabel.style.fontWeight = 'bold'
       name.appendChild(nameLabel)
-      name.append(` ${element.name}`)
+      name.append(` ${element.title}`)
       ul.appendChild(name)
-
-      const email = document.createElement('li')
-      const emailLabel = document.createElement('span')
-      emailLabel.textContent = 'Email: '
-      emailLabel.style.fontWeight = 'bold'
-      email.appendChild(emailLabel)
-      email.append(` ${element.email}`)
-      ul.appendChild(email)
 
       const createdAt = document.createElement('li')
       const createdAtLabel = document.createElement('span')

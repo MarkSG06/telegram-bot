@@ -10,7 +10,7 @@
     "start": "npm-run-all --parallel start:front-admin start:front-customer",
     "start:front-admin": "cd client/admin/front-admin && npm run dev",
     "start:front-customer": "cd client/customer && npm run dev",
-    "install": "npm-run-all --parallel install:front-admin install:customer && cd.. && cd api && install:api",
+    "install": "npm-run-all --parallel install:front-admin install:customer",
     "install:front-admin": "cd client/admin/front-admin && npm install",
     "install:customer": "cd client/customer && npm install",
     "install:api": "cd api && npm install",

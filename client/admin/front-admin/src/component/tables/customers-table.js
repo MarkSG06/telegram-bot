@@ -325,14 +325,6 @@ class CustomersTable extends HTMLElement {
       const ul = document.createElement('ul')
       data.appendChild(ul)
 
-      const name = document.createElement('li')
-      const nameLabel = document.createElement('span')
-      nameLabel.textContent = 'Nombre: '
-      nameLabel.style.fontWeight = 'bold'
-      name.appendChild(nameLabel)
-      name.append(` ${element.name}`)
-      ul.appendChild(name)
-
       const email = document.createElement('li')
       const emailLabel = document.createElement('span')
       emailLabel.textContent = 'Email: '
@@ -340,30 +332,6 @@ class CustomersTable extends HTMLElement {
       email.appendChild(emailLabel)
       email.append(` ${element.email}`)
       ul.appendChild(email)
-
-      const telephone = document.createElement('li')
-      const telephoneLabel = document.createElement('span')
-      telephoneLabel.textContent = 'Telefono: '
-      telephoneLabel.style.fontWeight = 'bold'
-      telephone.appendChild(telephoneLabel)
-      telephone.append(` ${element.telephone}`)
-      ul.appendChild(telephone)
-
-      const prefix = document.createElement('li')
-      const prefixLabel = document.createElement('span')
-      prefixLabel.textContent = 'Prefijo: '
-      prefixLabel.style.fontWeight = 'bold'
-      prefix.appendChild(prefixLabel)
-      prefix.append(` ${element.prefix}`)
-      ul.appendChild(prefix)
-
-      const birthdate = document.createElement('li')
-      const birthdateLabel = document.createElement('span')
-      birthdateLabel.textContent = 'Cumpleaños: '
-      birthdateLabel.style.fontWeight = 'bold'
-      birthdate.appendChild(birthdateLabel)
-      birthdate.append(` ${element.birthdate}`)
-      ul.appendChild(birthdate)
 
       const createdAt = document.createElement('li')
       const createdAtLabel = document.createElement('span')
