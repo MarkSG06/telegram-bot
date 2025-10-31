@@ -28,5 +28,6 @@ router.use('/customer/card', require('./customer/card'))
 router.use('/admin/subscription', require('./admin/subscription'))
 router.use('/customer/subscription', require('./customer/subscription'))
 router.use('/customer/chats', require('./customer/chats'))
+router.use('/customer/products/search', require('./customer/search'))
 
 module.exports = router

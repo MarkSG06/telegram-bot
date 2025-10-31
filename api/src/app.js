@@ -3,10 +3,12 @@ const app = express()
 const userTrackingMiddleware = require('./middlewares/user-tracking')
 const errorHandler = require('./middlewares/error-handler')
 const userAgentMiddleware = require('./middlewares/user-agent')
+const exposeServiceMiddleware = require('./middlewares/expose-services')
 const routes = require('./routes')
 
 // Antes de cargar
 app.use(express.json({ limit: '10mb', extended: true }))
+app.use(...Object.values(exposeServiceMiddleware))
 app.use(userTrackingMiddleware)
 app.use(userAgentMiddleware)
 

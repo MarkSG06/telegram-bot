@@ -1,117 +1,187 @@
-const OpenAI = require('openai')
+import OpenAI from 'openai'
+import { ChromaClient } from 'chromadb'
 
-module.exports = class OpenAIService {
+export default class OpenAIService {
   constructor () {
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
-    })
-    this.assistantEndpoint = null
-    this.threadId = null
-    this.messages = null
-    this.answer = null
-  }
-
-  async getAssistants () {
-    const myAssistants = await this.openai.beta.assistants.list({
-      order: 'desc',
-      limit: '20'
+      apiKey: process.env.OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true
     })
 
-    return myAssistants.data
+    this.assistantId = process.env.OPENAI_ASSISTANT_ID
+
+    if (!this.assistantId) {
+      console.error('❌ Falta OPENAI_ASSISTANT_ID en .env')
+      throw new Error('Falta la variable OPENAI_ASSISTANT_ID')
+    }
+
+    // NO inicializar ChromaDB aquí para evitar problemas
+    this.chromaClient = null
   }
 
-  async setAssistant (assistantEndpoint) {
-    this.assistantEndpoint = assistantEndpoint
+  /**
+   * Obtiene o crea el cliente de ChromaDB (lazy initialization)
+   */
+  async getChromaClient () {
+    if (!this.chromaClient) {
+      this.chromaClient = new ChromaClient()
+    }
+    return this.chromaClient
   }
 
-  async createThread () {
+  /**
+   * Busca productos en ChromaDB usando búsqueda semántica
+   */
+  async buscarProducto (query) {
     try {
-      const thread = await this.openai.beta.threads.create()
-      this.threadId = thread.id
+      const client = await this.getChromaClient()
+      const collection = await client.getOrCreateCollection({ name: 'products' })
+
+      const results = await collection.query({
+        queryTexts: [query],
+        nResults: 5
+      })
+      const ids = results.ids[0] || []
+      const metadatas = results.metadatas[0] || []
+      const distances = results.distances[0] || []
+
+      if (ids.length === 0) {
+        console.log('⚠️ No se encontraron productos en ChromaDB')
+        return []
+      }
+
+      const productos = ids.map((id, i) => ({
+        id,
+        distancia: distances[i],
+        ...metadatas[i]
+      }))
+
+      return productos
     } catch (error) {
-      console.log(error)
+      console.error('❌ Error buscando en ChromaDB:', error)
+      return []
     }
   }
 
-  setThread (theadId) {
-    this.threadId = theadId
-  }
+  /**
+   * Ejecuta el asistente de OpenAI con soporte para tools
+   */
+  async runAssistant (prompt, threadId = null) {
+    let currentThreadId = threadId
 
-  async createMessage (prompt) {
     try {
-      await this.openai.beta.threads.messages.create(
-        this.threadId,
-        {
-          role: 'user',
-          content: prompt
-        }
-      )
-
-      this.run = await this.openai.beta.threads.runs.createAndPoll(
-        this.threadId,
-        {
-          assistant_id: this.assistantEndpoint
-        }
-      )
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async runStatus () {
-    try {
-      console.log(this.run.status)
-
-      if (this.run.status === 'completed') {
-        const messages = await this.openai.beta.threads.messages.list(this.run.thread_id)
-        this.messages = messages.data
-        this.answer = this.messages[0].content[0].text.value
-        return
+      // 1️⃣ Crear hilo si no existe
+      if (!currentThreadId) {
+        const thread = await this.openai.beta.threads.create()
+        currentThreadId = thread.id
       }
 
-      if (
-        this.run.required_action &&
-        this.run.required_action.submit_tool_outputs &&
-        this.run.required_action.submit_tool_outputs.tool_calls
-      ) {
-        this.tools = this.run.required_action.submit_tool_outputs.tool_calls
-        return
-      }
+      // 2️⃣ Añadir mensaje del usuario
+      await this.openai.beta.threads.messages.create(currentThreadId, {
+        role: 'user',
+        content: [{ type: 'text', text: prompt }]
+      })
 
-      if (this.run.status === 'queued' || this.run.status === 'in_progress') {
-        await this.sleep(2000)
+      // 3️⃣ Crear el run del asistente
+      let run = await this.openai.beta.threads.runs.create(currentThreadId, {
+        assistant_id: this.assistantId
+      })
 
-        this.run = await this.openai.beta.threads.runs.retrieve(
-          this.run.id,
-          {
-            thread_id: this.threadId
+      // 4️⃣ Polling manual del estado del run
+      let maxAttempts = 60 // 60 segundos máximo
+
+      while (maxAttempts-- > 0) {
+        // Obtener el estado actual del run usando list
+        const listResponse = await this.openai.beta.threads.runs.list(currentThreadId)
+        const found = listResponse.data?.find(r => r.id === run.id)
+
+        if (!found) {
+          console.error('❌ Run no encontrado en list()')
+          break
+        }
+
+        run = found
+        console.log('⏳ Estado actual:', run.status)
+
+        // --- Si requiere acción (tools) ---
+        if (run.status === 'requires_action') {
+          const toolCalls = run.required_action?.submit_tool_outputs?.tool_calls || []
+
+          // Preparar todos los outputs
+          const toolOutputs = []
+
+          for (const toolCall of toolCalls) {
+            const funcName = toolCall.function.name
+            const args = JSON.parse(toolCall.function.arguments || '{}')
+
+            let output = '[]'
+            try {
+              // Buscar en ChromaDB usando el método de la clase
+              if (funcName === 'buscarProducto' || funcName === 'search_product') {
+                const query = args.query || args.userQuestion || ''
+
+                const productos = await this.buscarProducto(query)
+                output = JSON.stringify(productos)
+              } else {
+                output = JSON.stringify([])
+              }
+            } catch (toolErr) {
+              output = JSON.stringify({ error: toolErr.message })
+            }
+
+            toolOutputs.push({
+              tool_call_id: toolCall.id,
+              output
+            })
           }
-        )
 
-        await this.runStatus()
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
+          // ✅ Enviar tool outputs con la sintaxis correcta
+          try {
+            await this.openai.beta.threads.runs.submitToolOutputs(
+              run.id,
+              {
+                thread_id: currentThreadId,
+                tool_outputs: toolOutputs
+              }
+            )
 
-  async submitToolOutputs (toolOutputs) {
-    try {
-      this.run = await this.openai.beta.threads.runs.submitToolOutputs(
-        this.run.id,
-        {
-          thread_id: this.threadId,
-          tool_outputs: toolOutputs
+            // Esperar un poco antes de verificar el nuevo estado
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            continue
+          } catch (submitErr) {
+            console.error('❌ Error enviando tool_outputs:', submitErr)
+            break
+          }
         }
-      )
 
-      await this.runStatus()
-    } catch (error) {
-      console.log(error)
+        // Salir si ya completó o falló
+        if (['completed', 'failed', 'cancelled', 'expired'].includes(run.status)) {
+          break
+        }
+
+        // Esperar antes del siguiente chequeo
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+
+      // Verificar si se agotó el tiempo
+      if (maxAttempts <= 0) {
+        console.warn('⚠️ Se agotó el tiempo de espera para el run')
+      }
+
+      // 5️⃣ Obtener última respuesta del asistente
+      const messages = await this.openai.beta.threads.messages.list(currentThreadId)
+      const lastMessage = messages.data.find(m => m.role === 'assistant')
+
+      let answerText = 'No se obtuvo respuesta del asistente.'
+      if (lastMessage?.content?.[0]?.type === 'text') {
+        const text = lastMessage.content[0].text
+        answerText = (text?.value ?? text ?? '').toString().trim() || answerText
+      }
+
+      return { threadId: currentThreadId, answer: answerText }
+    } catch (err) {
+      console.error('❌ Error en runAssistant:', err)
+      return { threadId: currentThreadId || null, answer: 'Error interno en el asistente.' }
     }
-  }
-
-  sleep (ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 }
