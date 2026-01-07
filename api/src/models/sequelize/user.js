@@ -9,15 +9,7 @@ module.exports = function (sequelize, DataTypes) {
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: {
-            msg: 'Por favor, rellena el campo "Nombre".'
-          },
-          notEmpty: {
-            msg: 'Por favor, rellena el campo "Nombre".'
-          }
-        }
+        allowNull: true
       },
       email: {
         type: DataTypes.STRING,

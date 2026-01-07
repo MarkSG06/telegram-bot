@@ -20,4 +20,6 @@ router.use('/admin/sales', require('./admin/sales'))
 router.use('/admin/spots', require('./admin/spots'))
 router.use('/admin/towns', require('./admin/towns'))
 
+router.use('/customer/users', require('./customer/customer'))
+
 module.exports = router
