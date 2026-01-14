@@ -22,4 +22,6 @@ router.use('/admin/towns', require('./admin/towns'))
 
 router.use('/customer/users', require('./customer/customer'))
 
+router.use('/auth', require('./auth/auth-activates'))
+
 module.exports = router

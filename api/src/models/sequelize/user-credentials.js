@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const Model = sequelize.define('UserCredentials',
+  const Model = sequelize.define('UserCredential',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -41,7 +41,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-      tableName: 'user-credentials',
+      tableName: 'user_credentials',
       timestamps: true,
       paranoid: true,
       indexes: [

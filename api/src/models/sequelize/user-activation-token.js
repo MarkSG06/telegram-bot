@@ -41,7 +41,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-      tableName: 'user-activation-token',
+      tableName: 'user_activation_token',
       timestamps: true,
       paranoid: true,
       indexes: [

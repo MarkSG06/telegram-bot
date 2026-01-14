@@ -21,15 +21,15 @@ module.exports = {
       },
       prefix: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       telephone: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       birthdate: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
       },
       createdAt: {
         type: Sequelize.DATE,

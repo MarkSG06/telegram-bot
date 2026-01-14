@@ -18,15 +18,15 @@ module.exports = function (sequelize, DataTypes) {
       },
       telephone: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       prefix: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       birthdate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: true
       },
       createdAt: {
         type: DataTypes.DATE,

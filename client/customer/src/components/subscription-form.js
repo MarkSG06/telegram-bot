@@ -108,12 +108,11 @@ class SubscriptionForm extends HTMLElement {
           <h4>Empieza ahora</h4>
           <span>Te enviaremos un correo con los pasos para comenzar.</span>
 
-          <form novalidate>
+          <form>
             <input
               type="text"
               name="name"
               placeholder="Nombre"
-              autocomplete="name"
               required
             />
 
@@ -121,7 +120,6 @@ class SubscriptionForm extends HTMLElement {
               type="email"
               name="email"
               placeholder="Dirección de correo"
-              autocomplete="email"
               required
             />
 
