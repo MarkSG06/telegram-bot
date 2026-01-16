@@ -1,19 +1,23 @@
-class NotFound extends HTMLElement {
-  constructor () {
+class NotFound extends HTMLElement
+{
+  constructor ()
+  {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
   }
 
-  async connectedCallback () {
+  async connectedCallback ()
+  {
     await this.loadData()
     await this.render()
   }
 
-  loadData () {
+  loadData ()
+  {
     this.data =
-      {
-        title: '404',
-        svg: `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    {
+      title: '404',
+      svg: `<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 24 30" style="enable-background:new 0 0 50 50;"
         xml:space="preserve">
         <rect x="0" y="13" width="4" height="5" fill="#333">
@@ -35,14 +39,15 @@ class NotFound extends HTMLElement {
             repeatCount="indefinite" />
         </rect>
       </svg>`,
-        errorTitle: 'THE PAGE',
-        cause: 'WAS NOT FOUND',
-        button: 'RETURN TO HOME',
-        buttonLink: 'http://dev-youthing.com'
-      }
+      errorTitle: 'THE PAGE',
+      cause: 'WAS NOT FOUND',
+      button: 'RETURN TO HOME',
+      buttonLink: `${import.meta.env.VITE_BASE_URL}`
+    }
   }
 
-  render () {
+  render ()
+  {
     this.shadow.innerHTML =
     /* html */`
     <style>

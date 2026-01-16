@@ -20,3 +20,7 @@ import './component/tables/bots-table.js'
 import './component/filters/promoter-filter.js'
 import './component/forms/promoter-form.js'
 import './component/tables/promoter-table.js'
+import './component/filters/customers-filter.js'
+import './component/forms/customers-form.js'
+import './component/tables/customers-table.js'
+

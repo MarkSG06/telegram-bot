@@ -33,7 +33,6 @@ module.exports = class AuthorizationService {
         })
 
         const url = `${process.env.API_URL}/cuenta/activacion?token=${token}`
-
         return url
     }
 

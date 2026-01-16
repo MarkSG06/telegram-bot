@@ -1,15 +1,19 @@
-class Activation extends HTMLElement {
-    constructor() {
+class Activation extends HTMLElement
+{
+    constructor ()
+    {
         super()
         this.shadow = this.attachShadow({ mode: 'open' })
         this.data = {}
     }
 
-    async connectedCallback() {
+    async connectedCallback ()
+    {
         await this.render()
     }
 
-    render() {
+    render ()
+    {
         this.shadow.innerHTML =
     /* html */`
     <style>
@@ -142,7 +146,8 @@ class Activation extends HTMLElement {
   </section>
   `
 
-        this.shadow.querySelector('form').addEventListener('submit', async (event) => {
+        this.shadow.querySelector('form').addEventListener('submit', async (event) =>
+        {
             event.preventDefault()
             const password = this.shadow.querySelector('input[name="password"]').value
             const repeatPassword = this.shadow.querySelector('input[name="repeat-password"]').value
@@ -161,7 +166,6 @@ class Activation extends HTMLElement {
             }
 
             if (!regex.test(password)) {
-                console.log("holita")
                 this.shadow.querySelector('.message span').textContent = 'La contraseña no cumple con los requisitos mínimos'
                 return
             }
@@ -181,6 +185,10 @@ class Activation extends HTMLElement {
                 this.shadow.querySelector('.message span').textContent = 'Cuenta activada correctamente'
                 const form = this.shadow.querySelector('.form')
                 form.reset()
+                setTimeout(() =>
+                {
+                    window.location.href = '/login'
+                }, 2000)
             } else {
                 const data = await response.json()
                 this.shadow.querySelector('.message span').textContent = data.message

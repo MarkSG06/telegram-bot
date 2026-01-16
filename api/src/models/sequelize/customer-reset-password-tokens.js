@@ -41,7 +41,7 @@ module.exports = function (sequelize, DataTypes) {
       }
     }, {
       sequelize,
-      tableName: 'customer-reset-password-tokens',
+      tableName: 'customer_reset_password_tokens',
       timestamps: true,
       paranoid: true,
       indexes: [
