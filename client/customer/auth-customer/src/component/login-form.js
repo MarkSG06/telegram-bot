@@ -1,17 +1,21 @@
-class Login extends HTMLElement {
-    constructor() {
+class Login extends HTMLElement
+{
+    constructor ()
+    {
         super()
         this.shadow = this.attachShadow({ mode: 'open' })
         this.data = {}
     }
 
-    async connectedCallback() {
+    async connectedCallback ()
+    {
         console.log(window)
         await this.checkSignin()
         await this.render()
     }
-    
-    async checkSignin() {
+
+    async checkSignin ()
+    {
 
         try {
             const result = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/customer/check-signin`, {
@@ -29,7 +33,8 @@ class Login extends HTMLElement {
         }
     }
 
-    render() {
+    render ()
+    {
         this.shadow.innerHTML = /* html */`
             <style>
                 * {
@@ -167,7 +172,8 @@ class Login extends HTMLElement {
         `
         const form = this.shadow.querySelector('form')
 
-        form.addEventListener('submit', async (event) => {
+        form.addEventListener('submit', async (event) =>
+        {
             event.preventDefault()
             const formData = new FormData(form)
             const formDataJson = Object.fromEntries(formData.entries())
