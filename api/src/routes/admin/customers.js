@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const controller = require('../../controllers/admin/customer-controller.js')
-const authUserCookie = require('../../middlewares/auth-customer-cookie.js')
+const authUserCookie = require('../../middlewares/auth-user-cookie.js')
 
 router.post('/', [authUserCookie], controller.create)
 router.get('/', [authUserCookie], controller.findAll)

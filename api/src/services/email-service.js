@@ -8,8 +8,10 @@ const sequelizeDb = require('../models/sequelize')
 const SentEmail = sequelizeDb.SentEmail
 const EmailError = sequelizeDb.EmailError
 
-module.exports = class EmailService {
-  constructor (type) {
+module.exports = class EmailService
+{
+  constructor (type)
+  {
     if (type === 'smtp') {
       this.email = process.env.EMAIL
 
@@ -48,7 +50,8 @@ module.exports = class EmailService {
     }
   }
 
-  getAccessToken () {
+  getAccessToken ()
+  {
     const myOAuth2Client = new OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -64,7 +67,8 @@ module.exports = class EmailService {
     return myAccessToken
   }
 
-  sendEmail (user, userType, template, data, attachments = []) {
+  sendEmail (user, userType, template, data, attachments = [], log = true)
+  {
     try {
       if (!user.language) user.language = 'es'
 
@@ -72,16 +76,21 @@ module.exports = class EmailService {
       data.apiUrl = process.env.API_URL
       data.uuid = uuid
 
-      ejs.renderFile(path.join(__dirname, `../templates/emails/${user.language}/${this.template[template].file}.ejs`), { data }, (err, html) => {
+      ejs.renderFile(path.join(__dirname, `../templates/emails/${user.language}/${this.template[template].file}.ejs`), { data }, (err, html) =>
+      {
         if (err) {
-          EmailError.create(
-            {
-              userId: user.id,
-              userType,
-              emailTemplate: template,
-              error: err.message
-            }
-          )
+          if (log) {
+            EmailError.create(
+              {
+                userId: user.id,
+                userType,
+                emailTemplate: template,
+                error: err.message
+              }
+            )
+          } else {
+            console.error('❌ Error rendering template (DB logging disabled):', err)
+          }
 
           return
         }
@@ -97,27 +106,34 @@ module.exports = class EmailService {
           mailOptions.attachments = attachments
         }
 
-        this.transport.sendMail(mailOptions, function (err, result) {
+        this.transport.sendMail(mailOptions, function (err, result)
+        {
           if (err) {
-            EmailError.create(
-              {
-                userId: user.id,
-                userType,
-                emailTemplate: template,
-                error: err.message
-              }
-            )
+            if (log) {
+              EmailError.create(
+                {
+                  userId: user.id,
+                  userType,
+                  emailTemplate: template,
+                  error: err.message
+                }
+              )
+            } else {
+              console.error('❌ Error enviando email (DB logging disabled):', err)
+            }
           } else {
-            SentEmail.create(
-              {
-                userId: user.id,
-                userType,
-                sendAt: new Date(),
-                emailTemplate: template,
-                readed: false,
-                uuid
-              }
-            )
+            if (log) {
+              SentEmail.create(
+                {
+                  userId: user.id,
+                  userType,
+                  sendAt: new Date(),
+                  emailTemplate: template,
+                  readed: false,
+                  uuid
+                }
+              )
+            }
           }
         })
       })
@@ -126,7 +142,8 @@ module.exports = class EmailService {
     }
   }
 
-  emailReaded (uuid) {
+  emailReaded (uuid)
+  {
     SentEmail.update(
       {
         readedAt: new Date()

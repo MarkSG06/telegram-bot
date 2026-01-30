@@ -20,20 +20,14 @@
                 Para empezar, solo tienes que activar tu cuenta y elegir una contraseña segura.
             </p>
 
-            <!-- CTA -->
-            <a href="<%= data.activationUrl %>" style="
-            display:inline-block;
-            background:#667eea;
-            color:#ffffff;
-            text-decoration:none;
-            padding:14px 28px;
-            border-radius:10px;
-            font-size:16px;
-            font-weight:600;
-            box-shadow:0 8px 20px rgba(102,126,234,0.35);
-          ">
-                Activar mi cuenta
-            </a>
+            <!-- Code Display -->
+            <div style="background:#f0f4f8;padding:20px;border-radius:10px;font-size:32px;letter-spacing:5px;font-weight:bold;color:#667eea;margin:24px 0;">
+                <%= data.verificationCode %>
+            </div>
+
+            <p style="color:#555;font-size:16px;line-height:1.6;margin-bottom:24px;">
+                Copia este código y envíalo al bot de Telegram para verificar tu cuenta.
+            </p>
 
             <p style="margin-top:24px;color:#888;font-size:13px;">
                 Si no has creado esta cuenta, puedes ignorar este mensaje.

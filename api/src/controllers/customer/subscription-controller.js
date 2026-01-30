@@ -1,11 +1,9 @@
 const sequelizeDb = require('../../models/sequelize')
-
 const Customer = sequelizeDb.Customer
 const BotVerification = sequelizeDb.BotVerification
 
 exports.create = async (req, res, next) =>
 {
-  console.log('➡️ Entering CustomerController.create')
   try {
     const { email, name, botId } = req.body
 
@@ -13,38 +11,38 @@ exports.create = async (req, res, next) =>
       return res.status(400).json({ error: 'Datos incompletos' })
     }
 
-    // Crear Customer
-    const customer = await Customer.create(
-      {
-        email,
-        name
-      }
-    )
+    const customer = await Customer.create({
+      email,
+      name
+    })
 
-    // Crear relación con el bot
-    const botVerification = await BotVerification.create(
-      {
-        email,
-        botId
-      }
-    )
+    const verificationCode = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString()
 
-    // 🔥 Publicar evento para email / activation
+    const botVerification = await BotVerification.create({
+      email,
+      botId,
+      verificationCode
+    })
+
     req.redisClient.publish(
       'new-customer',
       JSON.stringify({
         id: customer.id,
         email: customer.email,
-        name: customer.name
+        name: customer.name,
+        verificationCode // 🔥 Enviamos el mismo código
       })
     )
+
 
     res.status(201).json({
       ok: true
     })
 
   } catch (err) {
-    console.error('Error en subscription-controller:', err)
+    console.error(err)
     next(err)
   }
 }

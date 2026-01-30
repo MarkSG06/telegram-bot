@@ -2,34 +2,26 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('customers', {
+  up: async (queryInterface, Sequelize) =>
+  {
+    await queryInterface.createTable('bot_verifications', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      name: {
+      email: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      email: {
+      verificationCode: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
       },
-      prefix: {
+      telegramUserId: {
         type: Sequelize.STRING,
-        allowNull: true
-      },
-      telephone: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-      birthdate: {
-        type: Sequelize.DATE,
-        allowNull: true
+        allowNull: false
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -45,7 +37,8 @@ module.exports = {
     })
   },
 
-  down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('customers')
+  down: async (queryInterface, Sequelize) =>
+  {
+    await queryInterface.dropTable('bot_verifications')
   }
 }

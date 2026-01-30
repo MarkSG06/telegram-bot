@@ -17,26 +17,31 @@ const entities = {
     }
 }
 
-module.exports = class AuthorizationService {
-    createActivationToken = async (id, type) => {
+module.exports = class AuthorizationService
+{
+    createActivationToken = async (id, type, save = true) =>
+    {
         const entity = entities[type]
         if (!entity) throw new Error('Invalid type provided')
 
         const token = jwt.sign({ id, type }, process.env.JWT_SECRET)
         const expirationDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
 
-        await entity.tokenModel.create({
-            [`${type}Id`]: id,
-            token,
-            expirationDate,
-            used: false
-        })
+        if (save) {
+            await entity.tokenModel.create({
+                [`${type}Id`]: id,
+                token,
+                expirationDate,
+                used: false
+            })
+        }
 
         const url = `${process.env.API_URL}/cuenta/activacion?token=${token}`
         return url
     }
 
-    useToken = async (token) => {
+    useToken = async (token) =>
+    {
         const { type } = jwt.verify(token, process.env.JWT_SECRET)
         const entity = entities[type]
         if (!entity) return false
@@ -59,7 +64,8 @@ module.exports = class AuthorizationService {
         return true
     }
 
-    createResetPasswordToken = async (id, type) => {
+    createResetPasswordToken = async (id, type) =>
+    {
         const entity = entities[type]
         if (!entity) throw new Error('Invalid type provided')
 
@@ -78,7 +84,8 @@ module.exports = class AuthorizationService {
         return url
     }
 
-    useResetPasswordToken = async (token) => {
+    useResetPasswordToken = async (token) =>
+    {
         const { type } = jwt.verify(token, process.env.JWT_SECRET)
         const entity = entities[type]
         if (!entity) return false
@@ -101,7 +108,8 @@ module.exports = class AuthorizationService {
         return true
     }
 
-    createCredentials = async (token, password) => {
+    createCredentials = async (token, password) =>
+    {
         const { id, type } = jwt.verify(token, process.env.JWT_SECRET)
         const entity = entities[type]
         const userEntity = await entity.model.findOne({ where: { id } })
@@ -116,7 +124,8 @@ module.exports = class AuthorizationService {
         await entity.credentialModel.create(credentials)
     }
 
-    resetCredentials = async (token, password) => {
+    resetCredentials = async (token, password) =>
+    {
         const { id, type } = jwt.verify(token, process.env.JWT_SECRET)
         const entity = entities[type]
         const userEntity = await entity.model.findOne({ where: { id } })
@@ -133,7 +142,8 @@ module.exports = class AuthorizationService {
         })
     }
 
-    createVerificationCode = () => {
+    createVerificationCode = () =>
+    {
         const code = Math.floor(100000 + Math.random() * 900000)
         return code
     }

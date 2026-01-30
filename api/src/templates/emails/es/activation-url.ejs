@@ -1,10 +1,65 @@
-<div style="text-align: center; padding: 1rem;">
-    <h1 style="color: #444; margin-bottom: 1rem;">¡Bienvenido a nuestra plataforma <%= data.name %>!</h1>
-    <p style="color: #666; font-size: 1.2rem; margin-bottom: 2rem;">Estamos muy contentos de tenerte con nosotros. Si
-        tienes alguna pregunta, no dudes en contactarnos. Ahora sólo tienes que apretar el botón de activación y elegir
-        una
-        contraseña para tu cuenta.</p>
-    <a href="<%= data.activationUrl %>"
-        style="background-color: #007bff; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Activar
-        cuenta</a>
+<div style="text-align: center; padding: 1rem; font-family: Arial, sans-serif;">
+    <h1 style="color: #444; margin-bottom: 1rem;">
+        ¡Bienvenido a nuestra plataforma <%= data.name %>!
+    </h1>
+
+    <p style="color: #666; font-size: 1.2rem; margin-bottom: 2rem;">
+        Estamos muy contentos de tenerte con nosotros. Para comenzar a usar el bot,
+        activa tu cuenta y crea una contraseña.
+    </p>
+
+    <div style="
+      background-color: #f0f8ff;
+      border: 2px solid #007bff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: left;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    ">
+        <p style="margin: 0.5rem 0; font-size: 1.1rem; color: #333;">
+            <strong>Nombre de usuario:</strong>
+            <%= data.name %>
+        </p>
+
+        <hr style="margin: 1.5rem 0;" />
+
+        <p style="margin: 0.5rem 0; font-size: 1rem; color: #666;">
+            Código de verificación:
+        </p>
+
+        <p style="
+        margin: 0;
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #007bff;
+        letter-spacing: 0.3rem;
+        font-family: 'Courier New', monospace;
+        text-align: center;
+      ">
+            <%= data.verificationCode %>
+        </p>
+    </div>
+
+    <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem;">
+        También puedes activar tu cuenta directamente usando el siguiente botón:
+    </p>
+
+    <a href="<%= data.activationUrl %>" style="
+      background-color: #007bff;
+      color: #fff;
+      padding: 15px 30px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      display: inline-block;
+    ">
+        Activar cuenta
+    </a>
+
+    <p style="margin-top: 2rem; font-size: 0.85rem; color: #999;">
+        Si no has solicitado esta cuenta, puedes ignorar este mensaje.
+    </p>
 </div>

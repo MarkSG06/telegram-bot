@@ -11,6 +11,8 @@ router.use('/admin/customer-events', require('./admin/customer-events'))
 router.use('/admin/emails', require('./admin/emails'))
 router.use('/admin/languages', require('./admin/languages'))
 router.use('/customer/customers', require('./customer/customer'))
+router.use('/customer/bot-verifications', require('./customer/bot-verification'))
+router.use('/customer/subscriptions', require('./customer/subscriptions'))
 
 router.use('/auth', require('./auth/auth-activates'))
 router.use('/auth/user', require('./auth/auth-users'))

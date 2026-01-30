@@ -1,16 +1,20 @@
-class SubscriptionForm extends HTMLElement {
-  constructor() {
+class SubscriptionForm extends HTMLElement
+{
+  constructor ()
+  {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
-    this.endpoint = '/api/customer/customers'
+    this.endpoint = '/api/customer/subscriptions'
     this.eventsBound = false
   }
 
-  connectedCallback() {
+  connectedCallback ()
+  {
     this.render()
   }
 
-  render() {
+  async render ()
+  {
     this.shadow.innerHTML = /* html */`
       <style>
         * {
@@ -101,6 +105,18 @@ class SubscriptionForm extends HTMLElement {
           background: #fee2e2;
           color: #991b1b;
         }
+
+        .bot-select {
+          padding: 1rem;
+          font-size: 1rem;
+          border-radius: 1rem;
+          border: 2px solid #ccc;
+        }
+
+        .bot-select:focus {
+          border-color: hsl(200, 77%, 52%);
+          outline: none;
+        }
       </style>
 
       <section class="subscription-form">
@@ -109,6 +125,9 @@ class SubscriptionForm extends HTMLElement {
           <span>Te enviaremos un correo con los pasos para comenzar.</span>
 
           <form>
+            <p>Selecciona un bot para comenzar</p>
+            <select class="bot-select" name="botName">
+            </select>
             <input
               type="text"
               name="name"
@@ -130,28 +149,51 @@ class SubscriptionForm extends HTMLElement {
         </div>
       </section>
     `
+    const botSelect = this.shadow.querySelector('.bot-select')
+
+    const bots = await fetch('/api/admin/bots', { credentials: 'include' })
+      .then(r => r.json())
+
+    const placeholder = document.createElement('option')
+    placeholder.value = ''
+    placeholder.textContent = 'Selecciona un bot'
+    placeholder.disabled = true
+    placeholder.selected = true
+    botSelect.appendChild(placeholder)
+
+    bots.rows.forEach(bot =>
+    {
+      const option = document.createElement('option')
+      option.value = bot.id
+      option.textContent = bot.name
+      botSelect.appendChild(option)
+    })
+
 
     this.bindEvents()
 
   }
 
-  bindEvents() {
+  bindEvents ()
+  {
     const form = this.shadow.querySelector('form')
     const message = this.shadow.querySelector('.message')
     const button = form.querySelector('button')
 
-    form.addEventListener('submit', async e => {
+    form.addEventListener('submit', async e =>
+    {
       e.preventDefault()
 
       if (button.disabled) return
 
       message.className = 'message'
 
-      const name = form.name.value.trim()
-      const email = form.email.value.trim()
+      const botId = form.querySelector('[name="botName"]').value
+      const name = form.querySelector('[name="name"]').value.trim()
+      const email = form.querySelector('[name="email"]').value.trim()
 
-      if (!name || !email || !email.includes('@')) {
-        message.textContent = 'Introduce un nombre y un correo válidos'
+      if (!botId || !name || !email || !email.includes('@')) {
+        message.textContent = 'Introduce un bot, nombre y correo válidos'
         message.classList.add('error')
         return
       }
@@ -163,27 +205,25 @@ class SubscriptionForm extends HTMLElement {
         const res = await fetch(this.endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email })
+          body: JSON.stringify({ botId, name, email })
         })
 
         const data = await res.json()
-
-        if (!res.ok) {
-          throw new Error(data?.error || 'Error en el servidor')
-        }
+        if (!res.ok) throw new Error(data?.error)
 
         message.textContent = 'Suscripción enviada correctamente'
         message.classList.add('success')
-        form.reset()
+        // form.reset()
 
       } catch (err) {
-        message.textContent = err.message || 'No se pudo enviar la suscripción'
+        message.textContent = err.message || 'Error al enviar'
         message.classList.add('error')
       } finally {
         button.disabled = false
         button.textContent = 'Suscribirme'
       }
     })
+
   }
 }
 

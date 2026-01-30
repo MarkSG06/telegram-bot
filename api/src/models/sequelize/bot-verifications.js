@@ -1,6 +1,6 @@
 module.exports = function (sequelize, DataTypes)
 {
-  const Model = sequelize.define('Customer',
+  const Model = sequelize.define('BotVerification',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -8,14 +8,32 @@ module.exports = function (sequelize, DataTypes)
         primaryKey: true,
         allowNull: false
       },
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        validate: {
+          isEmail: {
+            msg: 'Debe ser um e-mail válido'
+          },
+          notNull: {
+            msg: 'Por favor, rellena el campo "Email".'
+          },
+          notEmpty: {
+            msg: 'Por favor, rellena el campo "Email".'
+          }
+        }
+      },
+      verificationCode: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      telegramUserId: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      botId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
       },
       createdAt: {
         type: DataTypes.DATE,
@@ -37,7 +55,7 @@ module.exports = function (sequelize, DataTypes)
       }
     }, {
     sequelize,
-    tableName: 'customers',
+    tableName: 'bot_verifications',
     timestamps: true,
     paranoid: true,
     indexes: [
