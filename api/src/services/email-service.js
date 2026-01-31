@@ -5,11 +5,11 @@ const { google } = require('googleapis')
 const OAuth2 = google.auth.OAuth2
 const sequelizeDb = require('../models/sequelize')
 // const Email = sequelizeDb.Email
-const SentEmail = sequelizeDb.SentEmail
+const SendEmail = sequelizeDb.SendEmail
 const EmailError = sequelizeDb.EmailError
 
 module.exports = class EmailService {
-  constructor (type) {
+  constructor(type) {
     if (type === 'smtp') {
       this.email = process.env.EMAIL
 
@@ -44,11 +44,10 @@ module.exports = class EmailService {
 
     this.template = {
       activationUrl: { file: 'activation-url', subject: { es: 'Activación de cuenta', en: 'Account activation' } },
-      activationTelegramBot: { file: 'activation-telegram-bot', subject: { es: 'Activación de cuenta', en: 'Account activation' } }
     }
   }
 
-  getAccessToken () {
+  getAccessToken() {
     const myOAuth2Client = new OAuth2(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
@@ -64,7 +63,7 @@ module.exports = class EmailService {
     return myAccessToken
   }
 
-  sendEmail (user, userType, template, data, attachments = []) {
+  sendEmail(user, userType, template, data, attachments = []) {
     try {
       if (!user.language) user.language = 'es'
 
@@ -108,7 +107,7 @@ module.exports = class EmailService {
               }
             )
           } else {
-            SentEmail.create(
+            SendEmail.create(
               {
                 userId: user.id,
                 userType,
@@ -126,8 +125,8 @@ module.exports = class EmailService {
     }
   }
 
-  emailReaded (uuid) {
-    SentEmail.update(
+  emailReaded(uuid) {
+    SendEmail.update(
       {
         readedAt: new Date()
       },

@@ -1,24 +1,24 @@
 class Hero extends HTMLElement {
-  constructor () {
+  constructor() {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
     this.data = {}
   }
 
-  async connectedCallback () {
+  async connectedCallback() {
     await this.loadData()
     await this.render()
   }
 
-  loadData () {
+  loadData() {
     this.data = {
-      title: 'Un bot de Telegram para buscar tus productos favoritos',
-      description: 'Ahorra dinero perfeccionando y automatizando tus búsquedas gracias a nuestra IA.',
-      buttonText: 'Comenzar'
+      title: 'El punto de encuentro digital de Mallorca',
+      description: 'Conecta con gente de la isla, comparte planes, charla en tiempo real y descubre qué pasa cerca de ti.',
+      buttonText: 'Unirse ahora'
     }
   }
 
-  render () {
+  render() {
     this.shadow.innerHTML =
     /* html */`
     <style>
@@ -126,71 +126,6 @@ class Hero extends HTMLElement {
         background-color: hsl(200, 77%, 42%);
       }
 
-      .plane{
-        animation: paper-plane-scoping 2s alternate infinite;
-        animation-timing-function: linear;
-        bottom: 35%;
-        left: 35%;
-        position: absolute;
-        width: 30%;
-        z-index: 1005;
-
-        @media (min-width: 768px) {
-          bottom: 40%;
-          left: 35%;
-          width: 25%;
-        }
-
-        @media (min-width: 1024px) {
-          bottom: 40%;
-          left: 40%;
-          width: 20%;
-        }
-
-        @media (min-width: 1280px) {
-          bottom: 55%;
-          left: 45%;
-          width: 10%;
-        }
-      }
-
-      .plane svg {
-        animation: paper-plane-soaring 4s forwards infinite;
-        animation-timing-function: ease-in-out;
-        width: 100%;
-      }
-
-      @-webkit-keyframes paper-plane-scoping {
-        0% {
-          transform: translateY(0px);
-        }
-
-        100% {
-          transform: translateY(100px);
-        }
-      }
-
-      @-webkit-keyframes paper-plane-soaring {
-        0% {
-          transform: rotate(0deg);
-        }
-        40% {
-          transform: rotate(15deg);
-        }
-        50% {
-          transform: rotate(15deg);
-        }
-        60% {
-          transform: rotate(-10deg);
-        }
-        70% {
-          transform: rotate(-10deg);
-        }
-        100% {
-          transform: rotate(0deg);
-        }
-      }
-
       .clouds {
         bottom: 0;
         left: 0;
@@ -277,36 +212,6 @@ class Hero extends HTMLElement {
         }
       }
 
-      .hero-image{
-        bottom: 2%;
-        left: 15%;
-        position: absolute;
-        width: 70%;
-        z-index: 1001;
-
-        @media (min-width: 768px) {
-          bottom: 10%;
-          left: 25%;
-          width: 50%;
-        }
-
-        @media (min-width: 1024px) {
-          bottom: 15%;
-          left: 37%;
-          width: 30%;
-        }
-
-        @media (min-width: 1280px) {
-          bottom: 15%;
-          left: 38%;
-          width: 25%;
-        }
-      }
-
-      .hero-image img{
-        filter: drop-shadow(0 1rem 1rem hsl(200, 87%, 15%));
-      }
-
       .hero-footer-background-waves,
       .hero-footer-background-color {
         margin: 0;
@@ -350,15 +255,6 @@ class Hero extends HTMLElement {
           <button>${this.data.buttonText}</button>
         </div>
       </div>
-
-      <div class="plane">
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-        viewBox="0 0 1131.53 379.304" enable-background="new 0 0 1131.53 379.304"
-        xml:space="preserve">
-        <polygon fill="hsl(0, 0%, 85%)" points="72.008,0 274.113,140.173 274.113,301.804 390.796,221.102 601.682,367.302 1131.53,0.223  "/>
-        <polygon fill="hsl(60, 1%, 77%)" points="1131.53,0.223 274.113,140.173 274.113,301.804 390.796,221.102   "/>
-        </svg>
-      </div>
         
       <div class="clouds">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 762 331" class="cloud big front slowest">
@@ -388,16 +284,6 @@ class Hero extends HTMLElement {
             C245.15,143.684,232.639,141,219.5,141c-49.667,0-90.381,38.315-94.204,87H46.607C20.866,228,0,251.058,0,279.5
             S20.866,331,46.607,331h668.787C741.133,331,762,307.942,762,279.5S741.133,228,715.394,228z"/>
         </svg>
-      </div>
-        
-      <div class="hero-image">
-        <picture>
-          <source srcset="./images/hero.webp" media="(min-width: 1920px)">
-          <source srcset="./images/hero.webp" media="(min-width: 1024px)">
-          <source srcset="./images/hero.webp" media="(min-width: 768px)">
-          <source srcset="./images/hero.webp" media="(min-width: 480px)">
-          <img src="./images/hero.webp" alt="Imagen de prueba de Picsum">
-        </picture>
       </div>
 
       <div class="hero-footer">

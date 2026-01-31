@@ -1,29 +1,29 @@
 class FeaturesTitles extends HTMLElement {
-  constructor () {
+  constructor() {
     super()
     this.shadow = this.attachShadow({ mode: 'open' })
   }
 
-  async connectedCallback () {
+  async connectedCallback() {
     await this.loadData()
     await this.render()
   }
 
-  loadData () {
+  loadData() {
     this.data = [
       {
-        title: 'Filtra',
+        title: 'Únete',
       },
       {
-        title: 'Automatiza',
+        title: 'Participa',
       },
       {
-        title: 'Ahorra',
+        title: 'Conecta',
       }
     ]
   }
 
-  render () {
+  render() {
     this.shadow.innerHTML =
     /* html */`
     <style>

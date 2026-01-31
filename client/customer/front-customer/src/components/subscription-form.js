@@ -22,7 +22,7 @@ class SubscriptionForm extends HTMLElement {
         .subscription-form {
           min-height: 100vh;
           padding: 3rem 1rem;
-          background-color: hsl(198, 100%, 85%);
+          background-color: #FCFCFD;
           display: grid;
           place-items: center;
         }
@@ -131,11 +131,11 @@ class SubscriptionForm extends HTMLElement {
       </section>
     `
 
-    this.bindEvents()
+    this.formEvent()
 
   }
 
-  bindEvents() {
+  formEvent() {
     const form = this.shadow.querySelector('form')
     const message = this.shadow.querySelector('.message')
     const button = form.querySelector('button')

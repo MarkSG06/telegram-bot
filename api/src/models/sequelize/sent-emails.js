@@ -1,5 +1,5 @@
 module.exports = function (sequelize, DataTypes) {
-  const SentEmail = sequelize.define('SentEmail', {
+  const SendEmail = sequelize.define('SendEmail', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -46,7 +46,7 @@ module.exports = function (sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'sent_emails',
+    tableName: 'send_emails',
     timestamps: true,
     paranoid: true,
     indexes: [
@@ -62,5 +62,5 @@ module.exports = function (sequelize, DataTypes) {
   })
 
 
-  return SentEmail
+  return SendEmail
 }
